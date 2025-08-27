@@ -1,0 +1,224 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container-fluid {
+    padding-bottom: 50px;
+}
+
+
+
+/* ----------------------------------------------------------------------------- Styling header and footer */
+
+div.my-header {
+    margin-top: 10px;
+    margin-bottom: 40px;
+    text-align: center;
+    padding: 30px;
+}
+
+header {
+    background: url("bg-header.jpg") center/cover no-repeat;
+    padding: 2px;
+}
+
+.h1-head {
+    font-size: 42px;
+    font-weight: 700;
+    color: #520;
+}
+
+.p-head {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+}
+
+footer {
+    margin-top: auto;
+    background: #024;
+    padding-top: 10px;
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.p-foot {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+}
+
+
+
+/* =================================== Styling Shiny App ====================================== */
+
+/* ----------------------------------------------------------------------------- Styling titles and texts */
+
+h1.body {
+    margin-top: 130px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    border-top: 4px solid #600;
+    border-bottom: 4px solid #600;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    color: #042;
+}
+
+h1.body2 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    display: inline-block;
+    border-bottom: 4px solid #042;
+    border-top: 4px solid #042;
+    padding-bottom: 3px;
+    color: #600;
+}
+
+.sm-title1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    display: inline-block;
+    border-bottom: 3px solid #042;
+    padding-bottom: 3px;
+    color: #600;
+}
+
+p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+}
+
+.p-1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #929;
+}
+
+.p-2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #269;
+}
+
+
+
+/* ----------------------------------------------------------------------------- Styling buttons */
+
+.btn-default {
+    background-color: #024;
+    color: #fff;
+    border: 1px solid #024;
+    font-weight: 500;
+}
+
+.btn-default:hover {
+    background-color: #247;
+    color: #fff;
+    border: 1px solid #247;
+    font-weight: 500;
+}
+
+.btn-perso1 {
+    background-color: #042;
+    color: #fff;
+    border: 2px solid #164;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-perso1:hover {
+    background-color: #042;
+    color: #fff;
+    border: 2px solid #164;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+    width: 50%;
+    cursor: pointer;
+    text-shadow: 0 0 6px #ff0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-perso2 {
+    background-color: #135;
+    color: #fff;
+    border: 2px solid #247;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+    width: 50%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-perso2:hover {
+    background-color: #135;
+    color: #fff;
+    border: 2px solid #247;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+    width: 50%;
+    cursor: pointer;
+    text-shadow: 0 0 6px #ff0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+
+/* ----------------------------------------------------------------------------- Other styling */
+
+.progress-bar {
+    background-color: #042;
+}
+
+#InfoSeurat:empty:before {
+  background-color: #fff;
+  visibility: hidden;
+  overflow-x: auto;
+}
+
+#InfoSeurat {
+    padding: 2px;
+    background-color: #333;
+    color: #fff;
+    font-weight: 500;
+    font-size: 13px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    max-width: 90%;
+    overflow-x: auto;
+}
+
+.box1-for-plot {
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: auto;
+    max-width: 800px;
+    max-height: 100%;
+}
+

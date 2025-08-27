@@ -1,0 +1,243 @@
+/* ----------------------------------------- Styling the Header part */
+.title {
+    font-weight: 600;
+    font-size: 38px;
+    color: #024;
+    margin-top: 25px;
+    margin-bottom: 0px;
+    border-top: 0px solid #fff;
+    border-bottom: 0px solid #fff;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.subtitle {
+    font-weight: 600;
+    font-size: 30px;
+    color: #502;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.author {
+    font-size: 24px;
+    font-weight: 500;
+    color: #024;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.date {
+    font-size: 24px;
+    font-weight: 500;
+    color: #044;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+
+
+/* ----------------------------------------- Styling the headlines in the body */
+h1 {
+    margin-top: 60px;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 600;
+    color: #052;
+    border-top: 3px solid #600;
+    border-bottom: 3px solid #600;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+h2, h3, h4, h5 {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #063;
+}
+
+h3 {
+    font-size: 23px;
+    font-weight: 600;
+    color: #074;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #085;
+}
+
+h5 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #085;
+}
+
+
+
+/* ----------------------------------------- TOC management */
+#TOC.tocify {
+    width: 30%;
+    max-width: 280px;
+    max-height: 80%;
+    overflow-y: scroll;
+    position: fixed;
+    border: 1px solid #042;
+    border-radius: 6px;
+    color: #042;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.list-group-item.active {
+    color: #fff;
+    font-weight: 600;
+    background-color: #042;
+    border-color: #042;
+}
+
+.list-group-item:hover {
+    color: #000;
+    font-weight: 600;
+}
+
+li.tocify-item.list-group-item {
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+
+
+/* ----------------------------------------- Footer management */
+.foot {
+    margin-top: 200px;
+    border-top: 3px solid #042;
+    border-bottom: 3px solid #042;
+    color: #024;
+    font-size: 18px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: right;
+}
+
+
+
+/* ----------------------------------------- Paged table style */
+.pagedtable-wrapper {
+    border: 0px solid #fff;
+    border-radius: 6px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.pagedtable {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+thead {
+    background-color: #042;
+    border-top: 3px solid #000;
+    border-bottom: 2px solid #000;
+    color: #fff;
+}
+
+th {
+    padding: 3px 3px 3px 3px;
+}
+
+.pagedtable-header-name {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.pagedtable-header-type {
+    font-size: 14px;
+    color: #fd0;
+    text-align: center;
+    font-weight: 600;
+}
+
+tbody {
+    border-bottom: 3px solid #000;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+}
+
+tr td {
+    text-align: center !important;
+}
+
+.pagedtable-footer {
+    border-top: 0px solid #000 !important;
+    margin-top: 2px;
+    padding-top: 5px;
+}
+
+.pagedtable-info {
+    color: #042;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+
+
+/* ----------------------------------------- Styling the source code and chunks */
+pre {
+    max-height: 700px;
+    overflow-y: scroll;
+    background-color: #fff;
+    color: #000;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: Arial;
+}
+
+pre[class] {
+    max-height: 500px;
+    font-weight: 500;
+    background-color: #fff;
+}
+
+pre.sourceCode.r {
+    background-color: #333;
+    color: #fff;
+    max-height: 300px;
+    font-family: Consolas, Monaco, monospace;
+    font-weight: 600;
+}
+
+pre.sourceCode.r code {
+    background-color: #333;
+    color: #fff;
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+
+
+/* ----------------------------------------- Styling some text */
+.mini-title1 {
+    font-size: 110%;
+    font-weight: 600;
+    color: #600;
+    margin-top: 20px;
+}
+
+.mini-title2 {
+    font-size: 110%;
+    font-weight: 600;
+    color: #006;
+    margin-top: 20px;
+}

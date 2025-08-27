@@ -1,0 +1,536 @@
+---
+title: "ScRNAseq analysis"
+subtitle: "Integration analysis : nfeatures = `r params$IntegrationFeatures`"
+author: "juba"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    number_sections: no
+    theme: flatly
+    highlight: tango
+    toc: yes
+    toc_depth: 6
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    df_print: paged 
+    css: Rmd_style.css
+    
+params:
+  IntegrationFeatures: 2000
+---
+
+```{r Setting, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+# rm(list = ls())
+# graphics.off()
+# cat("\014")
+
+# SETUP ENVIRONNEMENT :
+# =================== :
+source("d:/Projects/Thesis/00_setup.R")
+
+# Directories :
+# =========== :
+out_dir <- "d:/Projects/Thesis/Integration/"
+
+# Set chunk options :
+# ================= :
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, 
+                      echo = FALSE, error = TRUE, fig.height = 6, fig.width = 7)
+```
+
+```{css, echo=FALSE}
+.scroll-150 {
+  max-height: 150px
+}
+```
+
+# Import data       {.tabset .tabset-pills}
+
+```{r}
+sc1 <- readRDS("/Projects/Thesis/Lib1/SeuratObject/Seurat2.rds")
+sc2 <- readRDS("/Projects/Thesis/Lib2/SeuratObject/Seurat2.rds")
+sc3 <- readRDS("/Projects/Thesis/Lib3/SeuratObject/Seurat2.rds")
+```
+
+
+## Library 1
+
+```{r}
+sc1
+
+DimPlot(sc1, 
+        group.by = "Condition", 
+        cols = MyPalette,
+        alpha = 0.8,
+        pt.size = 1)+
+  My_umap_theme()
+```
+
+## Library 2
+
+```{r}
+sc2
+
+DimPlot(sc2, 
+        group.by = "Condition", 
+        cols = MyPalette,
+        alpha = 0.8,
+        pt.size = 1)+
+  My_umap_theme()
+```
+
+## Library 3
+
+```{r}
+sc3
+
+DimPlot(sc3, 
+        group.by = "Condition", 
+        cols = MyPalette,
+        alpha = 0.8,
+        pt.size = 1)+
+  My_umap_theme()
+```
+
+
+# Merging & Integration
+
+In this section, we're going to merge the 3 libraries and integrate them for batch effect correction.
+
+But before the merging, we need to make some adjustments like renaming the cells for each library and 
+selecting the metadata we are going to use.
+
+[1- Renaming the cells :]{.mini-title1}
+
+```{r ,echo=TRUE}
+sc1 <- RenameCells(sc1, new.names = paste0("Lib1_",Cells(sc1)))
+sc2 <- RenameCells(sc2, new.names = paste0("Lib2_",Cells(sc2)))
+sc3 <- RenameCells(sc3, new.names = paste0("Lib3_",Cells(sc3)))
+```
+
+[2- Meta data selection :]{.mini-title1}
+
+```{r ,echo=TRUE}
+list_seurat <- list("Lib1" = sc1, "Lib2" = sc2, "Lib3" = sc3)
+
+for(lib in names(list_seurat)){
+  sc <- list_seurat[[lib]]
+  
+  sc@meta.data <- sc@meta.data %>% 
+    mutate(Lib = lib) %>% 
+    select(Lib, Condition, MyClusters, Clonotype, TCR, Phase)
+  
+  list_seurat[[lib]] <- sc
+}
+```
+
+```{r}
+sc1 <- list_seurat$Lib1
+sc2 <- list_seurat$Lib2
+sc3 <- list_seurat$Lib3
+
+rm(list_seurat, lib, sc)
+```
+
+
+And now we have
+
+- Library 1
+
+```{r ,class.output="scroll-200"}
+str(sc1@meta.data)
+```
+
+- Library 2
+
+```{r ,class.output="scroll-200"}
+str(sc2@meta.data)
+```
+
+- Library 3
+
+```{r ,class.output="scroll-200"}
+str(sc3@meta.data)
+```
+
+
+
+
+# Merging without integrating
+
+```{r}
+sc_merged <- merge(sc1, y= list(sc2, sc3))
+```
+
+```{r ,echo=TRUE ,class.output="scroll-150"}
+DefaultAssay(sc_merged) <- "RNA"
+
+sc_merged <- NormalizeData(sc_merged)
+sc_merged <- FindVariableFeatures(sc_merged)
+sc_merged <- ScaleData(sc_merged)
+sc_merged <- RunPCA(sc_merged)
+sc_merged <- FindNeighbors(sc_merged, dims = 1:30)
+sc_merged <- FindClusters(sc_merged, resolution = seq(0.1, 0.7, by= 0.2))
+sc_merged <- RunUMAP(sc_merged, dims = 1:30)
+```
+
+## Results 
+
+-   All the libraries
+
+```{r}
+DimPlot(sc_merged, 
+        group.by = "Lib", 
+        cols = MyPalette, 
+        pt.size = 1.3, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+-   Clusters and conditions
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "Condition",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "TCR",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "Clonotype",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "Phase",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "RNA_snn_res.0.1",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "RNA_snn_res.0.3",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "RNA_snn_res.0.5",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+```{r ,fig.width=13}
+DimPlot(sc_merged, 
+        group.by = "RNA_snn_res.0.7",
+        split.by = "Lib",
+        cols = MyPalette, 
+        pt.size = 1.1, 
+        alpha = 0.7)+
+  My_umap_theme()
+```
+
+
+
+# SCT-based integration 
+
+To enable meaningful comparisons across patients and experimental conditions, we perform 
+an integration using Seurat’s SCT-based workflow. This approach allows us to align
+transcriptomic profiles across libraries by minimizing batch effects and technical
+variation.
+
+SCT-based integration places cells from different samples into a shared 
+expression space, facilitating:
+- Global clustering across all cells, regardless of origin,
+- Detection of shared or unique cell states across patients or conditions,
+- Robust differential expression analysis between matched biological conditions,
+- More interpretable and comparable UMAP representations.
+
+Integration ensures that downstream results reflect biological rather than technical differences.
+
+
+
+[We'll be merging & integrating using SCT pipeline :]{style='font-size:120%; color:purple'}
+
+
+
+[1-  Selecting the features for Integration]{.mini-title1}
+
+```{r , echo=TRUE, results='hide'}
+features <- SelectIntegrationFeatures(object.list = list(sc1, sc2, sc3),
+                                      nfeatures = params$IntegrationFeatures)
+```
+
+We select the top __`r params$IntegrationFeatures`__
+highly variable genes that are shared across all samples.
+
+These genes serve as common anchors to align datasets during integration, 
+ensuring that biological signal is preserved while correcting for technical variation.
+
+
+
+[2-  Preparing for SCT Integration]{.mini-title1}
+
+```{r , echo=TRUE, results='hide'}
+sc <- list(sc1, sc2, sc3)
+sc <- PrepSCTIntegration(object.list = sc,
+                         anchor.features = features)
+```
+
+This step prepares each object for integration by scaling and aligning the 
+selected features across datasets.
+
+This ensures all objects are comparable before identifying anchors, 
+without altering the original data.
+
+
+
+[3-  Find Integration Anchors]{.mini-title1}
+
+```{r , echo=TRUE, results='hide'}
+anchors <- FindIntegrationAnchors(object.list = sc,
+                                  normalization.method = "SCT",
+                                  anchor.features = features)
+```
+
+Identifies anchors—pairs of biologically similar cells across datasets that will be 
+used to align and integrate the data.
+
+These anchors form the basis for correcting technical variation while preserving shared biological structure.
+
+
+
+[4- Integrating the data]{.mini-title1}
+
+```{r , echo=TRUE, results='hide'}
+SeuratObj <- IntegrateData(anchorset = anchors, 
+                           normalization.method = "SCT")
+```
+
+Integrates all datasets into a single Seurat object using the identified anchors.
+
+The resulting "integrated" assay contains batch-corrected expression values suitable for downstream analysis.
+
+
+
+[5- Clustering]{.mini-title1}
+
+```{r , echo=TRUE, results='hide'}
+SeuratObj <- RunPCA(SeuratObj)
+SeuratObj <- RunUMAP(SeuratObj, dims = 1:30)
+SeuratObj <- FindNeighbors(SeuratObj, dims = 1:30)
+SeuratObj <- FindClusters(SeuratObj, resolution = seq(0.1, 1.1, 0.2))
+```
+
+Principal Component Analysis (PCA) and Uniform Manifold Approximation (UMAP) are performed on the integrated data.
+
+We then compute a nearest-neighbor graph and apply clustering across multiple resolutions 
+to explore cellular heterogeneity.
+
+
+
+## Data exploration
+
+Let's explore the data now !
+
+```{r ,fig.width=11}
+DimPlot(SeuratObj,
+        group.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "Condition",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "Clonotype",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "TCR",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "integrated_snn_res.0.1",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "integrated_snn_res.0.3",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "integrated_snn_res.0.5",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+```{r ,fig.width=13}
+DimPlot(SeuratObj,
+        group.by = "integrated_snn_res.0.9",
+        split.by = "Lib",
+        pt.size = 1,
+        cols = MyPalette)+
+  My_umap_theme()+
+  theme(plot.title = element_text(margin = margin(b=0.1, unit = "in")))
+```
+
+
+
+
+## Differential Expression Analysis (DEA)
+
+Now we can proceed to the DEA between __Relapse__ and __Diagnosis__ across the 
+3 patients to find the common DEGs 
+
+```{r}
+DEA_res <- FindMarkers(object = SeuratObj,
+                       group.by = "Condition",
+                       ident.1 = "Relapse",
+                       ident.2 = "Diagnosis",
+                       only.pos = FALSE,
+                       min.pct = 0.4,
+                       min.diff.pct = 0,
+                       logfc.threshold = 0.75,
+                       verbose = TRUE)
+```
+
+```{r}
+DEA_res %>% DT::datatable()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+saveRDS(SeuratObj, file = paste0(out_dir,"seurat_integrated.rds"))
+# 
+# capture.output(
+#     cat(c("======================", "seurat_integrated1.rds", "======================"), sep = "\n"),
+#     print(SeuratObj),
+#     cat("=======================================================", sep = "\n"),
+#     cat("\n"),
+#     cat(c("Overview of the metadata :", "=========================="), sep = "\n"),
+#     str(SeuratObj@meta.data),
+#   
+#     file = paste0(seu_dir, "SeuratObjects_info"),
+#     append = F
+#   )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
