@@ -1,0 +1,8 @@
+data/
+Lib1/SeuratObject
+Lib2/SeuratObject
+Lib3/SeuratObject
+Integration/C3M/
+Integration/seurat_integrated.rds
+Results.R
+Results_exploration.R
