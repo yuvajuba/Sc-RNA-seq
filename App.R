@@ -237,49 +237,15 @@ server <- function(session, input, output){
   })
   
   plot2 <- eventReactive(input$ViewContrasts, {
-    req(seurat())
+    req(seurat(), input$Select_group1, input$Select_group2)
     seurat <- seurat()
     grp <- c(input$Select_group1, input$Select_group2)
+    meta_column <- input$Select_meta
     
-    ## Set up centroids for group labels :
-    df <- seurat@meta.data %>% 
-      mutate(cond = .data[[input$Select_meta]] %in% grp,
-             group = .data[[input$Select_meta]]) %>% 
-      select(cond, group, umap_1, umap_2)
-    
-    centroids <- df %>% 
-      filter(group %in% grp) %>% 
-      group_by(group) %>% 
-      summarise(umap_1 = mean(umap_1),
-                umap_2 = mean(umap_2))
-    
-    ## define the colors :
-    l = length(unique(seurat@meta.data[[input$Select_meta]]))
-    cols <- MyPalette[1:l] %>% 
-      setNames(unique(seurat@meta.data[[input$Select_meta]]))
-    lab_cols <- cols[names(cols) %in% grp]
-    
-    df %>% 
-      ggplot(aes(x= umap_1,
-                 y= umap_2))+
-      geom_point(aes(colour= group,
-                     alpha= cond),
-                 size= 1.1)+
-      geom_label_repel(data = centroids,
-                       aes(label= group),
-                       size = 5,
-                       fontface = "bold",
-                       color = "black",
-                       fill = lab_cols,
-                       box.padding = 0.8,
-                       label.padding = 0.4,
-                       segment.color = NA)+
-      labs(title = paste0(input$Select_group1, "   vs   ", input$Select_group2))+
-      scale_colour_manual(values = cols)+
-      scale_alpha_manual(values = c("TRUE"=1, "FALSE"=0.02))+
-      My_umap_shiny()+
-      guides(colour = "none",
-             alpha = "none")
+    labeled_umap(seuratobject = seurat,
+                 metadata = meta_column,
+                 cluster = grp,
+                 palette = MyPalette)
   })
   
   output$plt2 <- renderPlot({

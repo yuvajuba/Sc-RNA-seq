@@ -30,7 +30,7 @@ conflict_prefer("str_detect", "stringr")
 
 
 ## 2. Load custom project functions
-function_files <- list.files("d:/Projects/Thesis/00_functions/", 
+function_files <- list.files("d:/Projects/JFPeyron/00_functions/", 
                              full.names = TRUE, 
                              pattern = "\\.R$")
 
