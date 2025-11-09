@@ -13,6 +13,8 @@ html, body {
 /* ----------------------------------------------------------------------------- Styling header and footer */
 
 header {
+    margin: 0px;
+    max-height: 40vh;
     background: url("bg-header.jpg") center/cover no-repeat;
     padding: 2px;
     display: flex;
@@ -36,7 +38,7 @@ div.my-header {
 .h1-head {
     font-size: 3rem;
     font-weight: 700;
-    color: #520;
+    color: #620;
 }
 
 .p-head {
