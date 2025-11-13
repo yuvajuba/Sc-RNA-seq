@@ -13,7 +13,11 @@ source("00_setup.R")
 ################# #
 Libraries <- grep("Lib", list.files(path = "data/"), value = T)
 List_SeuratObj <- list()
-pct.mt.threshold <- 5  # Threshold for mitochondrial gene expression
+pct.mt.threshold <- 5  # Threshold for mitochondrial gene expression filtering
+diagnosis <- c("M104", "M143", "M187") # sample labels at diagnosis
+relapse <- c("M127", "M148", "M187r") # sample labels at relapse
+
+t0 <- Sys.time()
 
 for(Lib in Libraries){
   
@@ -52,7 +56,7 @@ for(Lib in Libraries){
   
   ##  QC HTODemux --> Import as PDF
   pdf(file = paste0(Out_dir_QC,Lib,"_QC_HTODemux.pdf"),
-      width = 6,
+      width = 8,
       height = 6,
       title = "QC Demultiplexing")
   
@@ -95,7 +99,7 @@ for(Lib in Libraries){
   
   ##  Visualization --> Importing as PDF    ---------------------------
   pdf(file = paste0(Out_dir_QC,Lib,"_preprocessing.pdf"), 
-      width = 6, 
+      width = 8, 
       height = 6,
       title = "Quality Control")
   
@@ -118,7 +122,7 @@ for(Lib in Libraries){
   SeuratObj <- subset(SeuratObj, subset = percent.mt < pct.mt.threshold & nFeature_RNA < 3500)
   
   pdf(file = paste0(Out_dir_QC,Lib,"_preprocessing_filtered.pdf"), 
-      width = 6, 
+      width = 8, 
       height = 6,
       title = "Quality Control - filtered")
   
@@ -184,36 +188,71 @@ for(Lib in Libraries){
                                 g2m.features = cc.genes.updated.2019$g2m.genes)
   
   ###  Plotting the clustering as pdf    ------------------------------------------
-  pdf(file = paste0(Out_dir_fig,Lib,"_Clusters_no_filt.pdf"), 
-      width = 6, 
-      height = 5,
+  pdf(file = paste0(Out_dir_fig,Lib,"_clusters_before_filt.pdf"), 
+      width = 8, 
+      height = 6,
       title = "Clusters - no.filt")
-  
-  print(DimPlot(SeuratObj, 
-                group.by = "hash.ID",
-                cols = MyPalette))
-  print(DimPlot(SeuratObj, 
-                group.by = "SCT_snn_res.0.1",
-                cols = MyPalette))
-  print(DimPlot(SeuratObj, 
-                group.by = "SCT_snn_res.0.5",
-                cols = MyPalette))
-  print(DimPlot(SeuratObj, 
-                group.by = "SCT_snn_res.0.9",
-                cols = MyPalette))
-  print(DimPlot(SeuratObj, 
-                group.by = "SCT_snn_res.1.5",
-                cols = MyPalette))
-  dev.off()
-  
-  ###  Plotting some metadata (clonotypes) as pdf    ------------------------------------------
-  pdf(file = paste0(Out_dir_fig,Lib,"_Clonotypes_no_filt.pdf"), 
-      width = 6, 
-      height = 5,
-      title = "Clonotypes - no.filt")
   
   print(DimPlot(SeuratObj,
                 group.by = "hash.ID",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8)+
+          labs(title = "General conditions",
+               colour = "Conditions"))
+  print(DimPlot(SeuratObj, 
+                group.by = "SCT_snn_res.0.1",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  print(DimPlot(SeuratObj, 
+                group.by = "SCT_snn_res.0.5",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  print(DimPlot(SeuratObj, 
+                group.by = "SCT_snn_res.0.9",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  print(DimPlot(SeuratObj, 
+                group.by = "SCT_snn_res.1.5",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  dev.off()
+  
+  
+  ## Enrich metadata    ------------------------------------------------------
+  
+  ## Adding a proper label for the conditions and clonotypes
+  SeuratObj@meta.data <- SeuratObj@meta.data %>% 
+    mutate(Condition = case_when(hash.ID %in% diagnosis ~ "Diagnosis",
+                                 hash.ID %in% relapse ~ "Relapse"),
+           Clonotype = case_when(startsWith(clone_id,"clono") ~ sub("onotype","",clone_id),
+                                 TRUE ~ clone_id))
+  
+  ## Adding some personalized clustering labels
+  SeuratObj@meta.data <- SeuratObj@meta.data %>% 
+    mutate(
+      Clust_res0.1 = as.factor(paste0(SCT_snn_res.0.1, substr(SeuratObj$Condition,1,1))),
+      Clust_res0.3 = as.factor(paste0(SCT_snn_res.0.3, substr(SeuratObj$Condition,1,1))),
+      Clust_res0.5 = as.factor(paste0(SCT_snn_res.0.5, substr(SeuratObj$Condition,1,1))),
+      Clust_res0.7 = as.factor(paste0(SCT_snn_res.0.7, substr(SeuratObj$Condition,1,1))),
+      Clust_res0.9 = as.factor(paste0(SCT_snn_res.0.9, substr(SeuratObj$Condition,1,1))),
+      Clust_res1.1 = as.factor(paste0(SCT_snn_res.1.1, substr(SeuratObj$Condition,1,1))),
+      Clust_res1.3 = as.factor(paste0(SCT_snn_res.1.3, substr(SeuratObj$Condition,1,1))),
+      Clust_res1.5 = as.factor(paste0(SCT_snn_res.1.5, substr(SeuratObj$Condition,1,1)))
+    )
+  
+  ## Plotting some metadata
+  pdf(file = paste0(Out_dir_fig,Lib,"_meta_before_filt.pdf"), 
+      width = 8, 
+      height = 6,
+      title = "Metadata - no.filt")
+  
+  print(DimPlot(SeuratObj,
+                group.by = "Condition",
                 cols = MyPalette,
                 pt.size = 0.7,
                 alpha = 0.8)+
@@ -229,13 +268,431 @@ for(Lib in Libraries){
                colour = "CC Phases"))
   
   print(DimPlot(SeuratObj,
-                group.by = "clone_id",
+                group.by = "Clonotype",
                 pt.size = 0.7,
                 alpha = 0.8)+
           labs(title = "Clonotypes")+
           theme(legend.position = "none"))
   
+  print(DimPlot(SeuratObj, 
+                group.by = "Clust_res0.1",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  
+  print(DimPlot(SeuratObj, 
+                group.by = "Clust_res0.5",
+                cols = MyPalette,
+                pt.size = 0.7,
+                alpha = 0.8))
+  
   dev.off()
+  
+  
+  ## Inspecting cell types   --------------------------------------------------------
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_cell_types_markers.pdf"), 
+      width = 9, 
+      height = 6,
+      title = "Cell types")
+  
+  print(
+    try(FeaturePlot(SeuratObj, 
+                    features = c("CD3D","CD99","CD7","CD5"), 
+                    cols = c("#EEEEEE","#221166"),
+                    keep.scale = "all",
+                    pt.size = 0.6,
+                    alpha = 0.8)+
+          labs(caption = "T-ALL blast marker genes")+
+          theme(plot.caption = element_text(colour = "darkred", face = "bold", size = 12)))
+  )
+  
+  print(
+    try(FeaturePlot(SeuratObj, 
+                    features = c("CD19","MS4A1"), 
+                    cols = c("#EEEEEE","#221166"),
+                    keep.scale = "all",
+                    pt.size = 0.6,
+                    alpha = 0.8)+
+          labs(caption = "B cell markers")+
+          theme(plot.caption = element_text(colour = "darkred", face = "bold", size = 12)))
+  )
+  
+  print(
+    try(FeaturePlot(SeuratObj, 
+                    features = c("CD14", "CD68"), 
+                    cols = c("#EEEEEE","#221166"),
+                    keep.scale = "all",
+                    pt.size = 0.6,
+                    alpha = 0.8)+
+          labs(caption = "Monocytes & macrophages markers")+
+          theme(plot.caption = element_text(colour = "darkred", face = "bold", size = 12)))
+  )
+  
+  print(
+    try(FeaturePlot(SeuratObj, 
+                    features = c("NKG7","GNLY"), 
+                    cols = c("#EEEEEE","#221166"),
+                    keep.scale = "all",
+                    pt.size = 0.6,
+                    alpha = 0.8)+
+          labs(caption = "NK markers")+
+          theme(plot.caption = element_text(colour = "darkred", face = "bold", size = 12)))
+  )
+  
+  
+  dev.off()
+  
+  ## Inspecting clonotypes    --------------------------------------------------
+  
+  SeuratObj@meta.data$TCR <- SeuratObj@meta.data$v_call
+  for(c in c("Clonotype", "TCR")){
+    SeuratObj@meta.data %>% 
+      dplyr::count(.data[[c]]) %>% 
+      dplyr::mutate(x = case_when(n == 1 ~ "unique",
+                                  n >= 2 & n < 10 ~ "few",
+                                  TRUE ~ .data[[c]])) -> tmp
+    
+    unique_cl <- tmp[[c]][which(tmp$x == "unique")]
+    low_cl <- tmp[[c]][which(tmp$x == "few")]
+    
+    SeuratObj@meta.data <- SeuratObj@meta.data %>% 
+      dplyr::mutate(!!sym(c) := case_when(is.na(.data[[c]]) ~ "missing",
+                                          .data[[c]] %in% unique_cl ~ "unique",
+                                          .data[[c]] %in% low_cl ~ "low_count",
+                                          TRUE ~ .data[[c]]))
+    
+    # !!sym(c) converts the string "Clonotype" into a symbol (like Clonotype), 
+    # and !! unquotes it so mutate() knows to use it dynamically.
+    # However — R’s standard = doesn’t allow unquoting on the left-hand side 
+    # of an assignment inside mutate()
+    # That’s why tidyverse uses the special := operator (called the 
+    # walrus operator 🦭 in this context) for dynamic assignment.
+  }
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_clones&TCR_1_before_filt.pdf"), 
+      width = 8, 
+      height = 6,
+      title = "Clonotypes & TCR")
+  
+  print(
+    DimPlot(SeuratObj,
+            group.by = "Clonotype",
+            cols = c(MyPalette, colors(distinct = T)),
+            pt.size = 1,
+            alpha = .7,
+            label = F,
+            label.box = T,
+            label.color = "#fff",
+            repel = T)+
+      My_umap_theme()+
+      scale_fill_manual(values = MyPalette)
+  )
+  
+  t <- 150
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(Condition, Clonotype) %>% 
+      ggplot(aes(x= Condition, y= n, fill= Clonotype))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 4,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "Clonotypes distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  print(
+    DimPlot(SeuratObj,
+            group.by = "TCR",
+            cols = c(MyPalette, colors(distinct = T)),
+            pt.size = 1,
+            alpha = .7,
+            label = F,
+            label.box = T,
+            label.color = "#fff",
+            repel = T)+
+      My_umap_theme()+
+      scale_fill_manual(values = MyPalette)
+  )
+  
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(Condition, TCR) %>% 
+      ggplot(aes(x= Condition, y= n, fill= TCR))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 4,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "TCR distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  t <- 100
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(TCR, Clonotype, Condition) %>% 
+      ggplot(aes(x= Clonotype, y= n, fill= TCR))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 4,
+                fontface = "bold")+
+      facet_grid(. ~ Condition)+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "TCR vs Clonotypes",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()+
+      theme(axis.text.x = element_text(angle = 30),
+            strip.background = element_rect(fill = "#051", colour = "#000", size = 0.7),
+            strip.text = element_text(size = 12, face = "bold"))
+  )
+  
+  print(
+    DimPlot(SeuratObj,
+            group.by = "SCT_snn_res.0.1",
+            cols = c(MyPalette, colors(distinct = T)),
+            pt.size = 1,
+            alpha = .7,
+            label = T,
+            label.box = T,
+            label.color = "#fff",
+            repel = T)+
+      My_umap_theme()+
+      scale_fill_manual(values = MyPalette)
+  )
+  
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(SCT_snn_res.0.1, Clonotype) %>% 
+      ggplot(aes(x= SCT_snn_res.0.1, y= n, fill= Clonotype))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 3,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "Clonotypes distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(Clust_res0.1, Clonotype) %>% 
+      ggplot(aes(x= Clust_res0.1, y= n, fill= Clonotype))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 3,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "Clonotypes distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(SCT_snn_res.0.1, TCR) %>% 
+      ggplot(aes(x= SCT_snn_res.0.1, y= n, fill= TCR))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 3,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "TCR distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(Clust_res0.1, TCR) %>% 
+      ggplot(aes(x= Clust_res0.1, y= n, fill= TCR))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 3,
+                fontface = "bold")+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "Clonotypes distribution",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()
+  )
+  
+  dev.off()
+  
+  ## wave 2 
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_clones_clust_TCR_before_filt.pdf"), 
+      width = 10, 
+      height = 12,
+      title = "Clonotypes & TCR & clust")
+  
+  t <- 100
+  print(
+    SeuratObj@meta.data %>% 
+      dplyr::count(TCR, Clonotype, Clust_res0.1) %>% 
+      ggplot(aes(x= Clonotype, y= n, fill= TCR))+
+      geom_bar(position = "stack",
+               stat = "identity",
+               width = .8)+
+      geom_text(aes(label= ifelse(n >= t, n, "")),
+                position = position_stack(vjust = 0.5, reverse = F),
+                colour = "white",
+                size = 3.6,
+                fontface = "bold")+
+      facet_grid(Clust_res0.1 ~ ., 
+                 scale = "free", 
+                 space = "free")+
+      coord_flip()+
+      scale_fill_manual(values = MyPalette)+
+      labs(title = "TCR - Clonotypes - Clusters",
+           y = "Count",
+           caption = paste0("Label count min threshold : ", t))+
+      My_bplot_theme()+
+      theme(axis.text.x = element_text(angle = 30),
+            strip.background = element_rect(fill = "#051", colour = "#000", size = 0.7),
+            strip.text = element_text(size = 11, face = "bold"),
+            panel.grid.major.y = element_blank(),
+            panel.grid.minor.y = element_blank())
+  )
+  
+  dev.off()
+  
+  ## wave 3
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_clones_cond_TCR_before_filt.pdf"), 
+      width = 10, 
+      height = 15,
+      title = "Clonotypes & TCR & cond")
+  
+  print(
+    SeuratObj@meta.data %>% 
+      ggplot(aes(x= umap_1,
+                 y= umap_2))+
+      My_umap_theme()+
+      geom_point(aes(colour= TCR),
+                 size = .6,
+                 alpha = .7)+
+      facet_grid(Clonotype ~ Condition, 
+                 margins = T, switch = "y")+
+      theme(plot.margin = margin(t=0.05,b=0.05,l=0.05,r=0.05, unit = "in"),
+            panel.background = element_rect(colour = "#555"))+
+      guides(colour = guide_legend(override.aes = list(size = 3)))+
+      scale_colour_manual(values = MyPalette)
+  )
+  
+  dev.off()
+  
+  ## wave 4 -- cell cycle
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_cell_cycle_1_before_filt.pdf"), 
+      width = 12, 
+      height = 16,
+      title = "CC 1")
+  
+  print(
+    SeuratObj@meta.data %>% 
+      ggplot(aes(x= umap_1,
+                 y= umap_2))+
+      My_umap_theme()+
+      geom_point(aes(colour= TCR),
+                 size = .6,
+                 alpha = .7)+
+      facet_grid(Clonotype ~ Phase, 
+                 margins = T, switch = "y")+
+      theme(plot.margin = margin(t=0.05,b=0.05,l=0.05,r=0.05, unit = "in"),
+            panel.background = element_rect(colour = "#555"))+
+      guides(colour = guide_legend(override.aes = list(size = 3)))+
+      scale_colour_manual(values = MyPalette)
+  )
+  
+  dev.off()
+  
+  
+  pdf(file = paste0(Out_dir_fig,Lib,"_cell_cycle_2_before_filt.pdf"), 
+      width = 12, 
+      height = 18,
+      title = "CC 2")
+  
+  
+  print(
+    SeuratObj@meta.data %>% 
+      ggplot(aes(x= umap_1,
+                 y= umap_2))+
+      My_umap_theme()+
+      geom_point(aes(colour= TCR),
+                 size = .6,
+                 alpha = .7)+
+      facet_grid(Clust_res0.1 ~ Phase, 
+                 margins = T, switch = "y")+
+      theme(plot.margin = margin(t=0.05,b=0.05,l=0.05,r=0.05, unit = "in"),
+            panel.background = element_rect(colour = "#555"))+
+      guides(colour = guide_legend(override.aes = list(size = 3)))+
+      scale_colour_manual(values = MyPalette)
+  )
+  
+  dev.off()
+  
+  
+  ## Additional metadata (Merging)    ------------------------------------------
+  SeuratObj@meta.data <- SeuratObj@meta.data %>% 
+    mutate(v2.cond_cc = paste0(substr(Condition,1,1),"_",Phase),
+           v2.cond_cl = paste0(substr(Condition,1,1),"_",Clonotype),
+           v2.cond_tcr = paste0(substr(Condition,1,1),"_",TCR),
+           v2.clust_cc = paste0(Clust_res0.1,"_",Phase),
+           v2.clust_cl = paste0(Clust_res0.1,"_",Clonotype),
+           v2.clust_tcr = paste0(Clust_res0.1,"_",TCR),
+           v2.cc_cl = paste0(Phase,"_",Clonotype),
+           v2.cc_tcr = paste0(Phase,"_",TCR),
+           v2.cl_tcr = paste0(Clonotype,"_",TCR),
+           v3.cond_cc_cl = paste0(substr(Condition,1,1),"_",Phase,"_",Clonotype),
+           v3.cond_cc_tcr = paste0(substr(Condition,1,1),"_",Phase,"_",TCR),
+           v3.cond_cl_tcr = paste0(substr(Condition,1,1),"_",Clonotype,"_",TCR),
+           v3.clust_cc_cl = paste0(Clust_res0.1,"_",Phase,"_",Clonotype),
+           v3.clust_cc_tcr = paste0(Clust_res0.1,"_",Phase,"_",TCR),
+           v3.clust_cl_tcr = paste0(Clust_res0.1,"_",Clonotype,"_",TCR),
+           v3.cc_cl_tcr = paste0(Phase,"_",Clonotype,"_",TCR),
+           v4.cond = paste0(substr(Condition,1,1),"_",Phase,"_",Clonotype,"_",TCR),
+           v4.clust = paste0(Clust_res0.1,"_",Phase,"_",Clonotype,"_",TCR))
+  
   
   
   ##  Save seuratobject       ------------------------------------------------
@@ -251,70 +708,23 @@ for(Lib in Libraries){
   str(SeuratObj@meta.data)
   sink()
   
+  
+  t = Sys.time() - t0
+  cat(c("===========","Duration  : ","==========="), sep = "\n")
+  cat(as.numeric(t, units = "mins"), " minutes")
+  
 }
 
 # Clean up environment :
 # -------------------- :
-rm(list = setdiff(ls(), c("List_SeuratObj", "MyPalette")))
+rm(list = setdiff(ls(), c("List_SeuratObj", "MyPalette", 
+                          "My_bplot_theme", "My_umap_theme")))
 
 
 
 
-# # Merging & Integration : ########
-# ################################ #
-# 
-# ## Data adjustement ------
-# List_SeuratObj$Lib1@meta.data <- List_SeuratObj$Lib1@meta.data[,1:23]
-# List_SeuratObj$Lib2@meta.data <- List_SeuratObj$Lib2@meta.data[,1:23]
-# List_SeuratObj$Lib3@meta.data <- List_SeuratObj$Lib3@meta.data[,1:23]
-# List_SeuratObj$Lib1$Lib <- "Lib1"
-# List_SeuratObj$Lib2$Lib <- "Lib2"
-# List_SeuratObj$Lib3$Lib <- "Lib3"
-# 
-# ## Data merging ------
-# SeuratObj <- merge(x = List_SeuratObj$Lib1, 
-#                    y = c(List_SeuratObj$Lib2, List_SeuratObj$Lib3),
-#                    project = "T-ALL")
-# 
-# SeuratObj <- SCTransform(SeuratObj, assay = "RNA", verbose = T)
-# SeuratObj <- RunPCA(SeuratObj)
-# SeuratObj <- RunUMAP(SeuratObj, dims = 1:30)
-# 
-# ## Data integration ------
-# SeuratObj <- IntegrateLayers(object = SeuratObj,
-#                              method = CCAIntegration,
-#                              normalization.method = "SCT",
-#                              verbose = T)
-# 
-# SeuratObj <- FindNeighbors(SeuratObj, reduction = "integrated.dr", dims = 1:30)
-# SeuratObj <- FindClusters(SeuratObj, resolution = seq(0.1,1.1, by = 0.2))
-# SeuratObj <- RunUMAP(SeuratObj, dims = 1:30, reduction = "integrated.dr")
-# 
-# SeuratObj@meta.data <- SeuratObj@meta.data %>% 
-#   merge(as.data.frame(SeuratObj@reductions$umap@cell.embeddings), by = 0) %>% 
-#   column_to_rownames(var = "Row.names")
-# 
-# SeuratObj <- CellCycleScoring(SeuratObj,
-#                               s.features = cc.genes.updated.2019$s.genes,
-#                               g2m.features = cc.genes.updated.2019$g2m.genes)
-# 
-# SeuratObj@meta.data <- SeuratObj@meta.data %>% 
-#   dplyr::mutate(clonotype = case_when(
-#     startsWith(clone_id, "clono") ~ sub("onotype","",clone_id),
-#     TRUE ~ clone_id
-#   ))
-# 
-# # Saving the object -------
-# saveRDS(SeuratObj, file = "seuratObj_integration/Seurat1_int.rds")
-# 
-# sink("seuratObj_integration/INFO")
-# cat(c("===============","Seurat1_int.rds","==============="), sep = "\n")
-# print(SeuratObj)
-# cat("==========================================================", sep = "\n")
-# cat(c("Overview of the metadata :",
-#       "=========================="), sep = "\n")
-# str(SeuratObj@meta.data)
-# sink()
+
+
 
 
 # # Saving the instance -----

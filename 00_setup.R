@@ -17,7 +17,7 @@ load_or_install <- function(pkgs){
 # -- List of packages for this project
 List_packages <- c("dplyr", "tibble", "stringr", "ggplot2", "tidyr", "ggsci", "shiny",
                    "ggrepel", "Seurat", "writexl", "knitr", "clustree", "conflicted",
-                   "clusterProfiler", "org.Hs.eg.db", "ComplexHeatmap", "bslib")
+                   "clusterProfiler", "org.Hs.eg.db", "ComplexHeatmap", "bslib", "gt")
 
 # -- Load all required packages
 load_or_install(List_packages)
