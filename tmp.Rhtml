@@ -1,0 +1,111 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tmp</title>
+  <link rel="stylesheet" href="tmp-css.css" />
+</head>
+
+
+
+<body>
+
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<!--begin.rcode message=FALSE, warning=FALSE, echo=FALSE
+library(Seurat)
+library(ggplot2)
+library(dplyr)
+
+lib <- readRDS("Lib2/SeuratObject/Seurat1.rds")
+
+MyPalette <- c("#820","#280","#228","#804","#4f0","#42f","#770","#2f8","#408")
+
+end.rcode-->
+
+<div class="slider-container">
+
+<h2>Plots in here:</h2>
+
+<div class="slider-wrapper"> 
+
+<div class="slide">
+<!--begin.rcode fig.width=8, fig.height=7
+DimPlot(lib, group.by = "Condition", cols = MyPalette)
+end.rcode-->
+</div>
+
+<div class="slide">
+<!--begin.rcode fig.width=8, fig.height=7
+DimPlot(lib, group.by = "Clonotype", cols = MyPalette)
+end.rcode-->
+</div>
+
+<div class="slide">
+<!--begin.rcode fig.width=8, fig.height=7
+DimPlot(lib, group.by = "TCR", cols = MyPalette)
+end.rcode-->
+</div>
+
+</div>
+
+<div class="slider-arrows">
+  <div class="arrow arrow-left">&#10094;</div>
+  <div class="arrow arrow-right">&#10095;</div>
+</div>
+
+<div class="slider-dots">
+  <span class="dot active"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+</div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll(".slider-container").forEach(function(container){
+
+    const wrapper = container.querySelector(".slider-wrapper");
+    const slides = container.querySelectorAll(".slide");
+    const dots = container.querySelectorAll(".dot");
+    const arrowLeft = container.querySelector(".arrow-left");
+    const arrowRight = container.querySelector(".arrow-right");
+
+    let current = 0;
+    const total = slides.length;
+
+    function goToSlide(i) {
+      current = (i + total) % total;  // infinite loop logic
+      wrapper.style.transform = `translateX(-${current * 100}%)`;
+
+      dots.forEach(d => d.classList.remove("active"));
+      dots[current].classList.add("active");
+    }
+
+    // dot click
+    dots.forEach((dot, idx) => {
+      dot.addEventListener("click", () => goToSlide(idx));
+    });
+
+    // arrows click
+    arrowLeft.addEventListener("click", () => goToSlide(current - 1));
+    arrowRight.addEventListener("click", () => goToSlide(current + 1));
+
+    // optional: keyboard arrows
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft")  goToSlide(current - 1);
+      if (e.key === "ArrowRight") goToSlide(current + 1);
+    });
+
+  });
+
+});
+</script>
+
+
+</body>
+</html>

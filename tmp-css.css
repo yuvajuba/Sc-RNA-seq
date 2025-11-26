@@ -1,0 +1,112 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  width: 1600px;
+  text-align: center;
+  margin: auto;
+}
+
+h2 {
+  margin: 20px 0px;
+  border-bottom: 8px double violet;
+  font-family: Arial, Sans-Serif;
+  font-size: 2.4rem;
+  color: darkred;
+}
+
+/* --- slider core --- */
+.slider-container {
+  width: 1000px;
+  position: relative;
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slider-wrapper {
+  display: flex;
+  transition: transform 0.8s ease;
+  width: 100%;
+}
+
+.slide {
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- dots navigation --- */
+.slider-dots {
+  margin: 12px 0;
+  text-align: center;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.dot.active {
+  background-color: #444;
+}
+
+/* --- arrows --- */
+.slider-arrows {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.slider-container:hover .slider-arrows {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrow {
+  cursor: pointer;
+  padding: 8px 14px;
+  font-size: 28px;
+  color: #fff;
+  background: rgba(0,0,0,0.35);
+  border-radius: 4px;
+  user-select: none;
+}
+.arrow:hover {
+  background: rgba(0,0,0,0.55);
+}
+
+
+@media (max-width: 1440px) {
+	h2 {
+  border-bottom: 8px double orangered;
+  font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 1024px) {
+	h2 {
+  border-bottom: 8px double darkred;
+  font-size: 1.8rem;
+  }
+}
+

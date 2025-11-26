@@ -16,6 +16,9 @@ List_SeuratObj <- list()
 pct.mt.threshold <- 5  # Threshold for mitochondrial gene expression filtering
 diagnosis <- c("M104", "M143", "M187") # sample labels at diagnosis
 relapse <- c("M127", "M148", "M187r") # sample labels at relapse
+pos.quantile <- list(Lib1 = 0.98,
+                     Lib2 = 0.99,
+                     Lib3 = 0.98)  # HTO demultiplexing threshold 
 
 t0 <- Sys.time()
 
@@ -51,8 +54,41 @@ for(Lib in Libraries){
   SeuratObj <- NormalizeData(SeuratObj, assay = "HTO", normalization.method = "CLR")
   
   ##  Demultiplexing the HTO data     --------------------------------------------
+  SeuratObj_pos99 <- HTODemux(SeuratObj, 
+                              assay = "HTO", 
+                              positive.quantile = 0.99, 
+                              nstarts = 100, 
+                              nsamples = 100) # default params
+  
+  SeuratObj_pos98 <- HTODemux(SeuratObj, 
+                              assay = "HTO", 
+                              positive.quantile = 0.98, 
+                              nstarts = 100, 
+                              nsamples = 100) # default params
+  
+  SeuratObj_pos995 <- HTODemux(SeuratObj, 
+                              assay = "HTO", 
+                              positive.quantile = 0.995, 
+                              nstarts = 100, 
+                              nsamples = 100) # default params
+  
+  SeuratObj_pos97 <- HTODemux(SeuratObj, 
+                              assay = "HTO", 
+                              positive.quantile = 0.97, 
+                              nstarts = 100, 
+                              nsamples = 100) # default params
+  
+  SeuratObj_pos96 <- HTODemux(SeuratObj, 
+                              assay = "HTO", 
+                              positive.quantile = 0.96, 
+                              nstarts = 100, 
+                              nsamples = 100) # default params
+  
   SeuratObj <- HTODemux(SeuratObj, 
-                        assay = "HTO", positive.quantile = 0.99, nstarts = 100, nsamples = 100) # default params
+                        assay = "HTO", 
+                        positive.quantile = pos.quantile[[Lib]], 
+                        nstarts = 100, 
+                        nsamples = 100) # default params
   
   ##  QC HTODemux --> Import as PDF
   pdf(file = paste0(Out_dir_QC,Lib,"_QC_HTODemux.pdf"),
@@ -61,7 +97,7 @@ for(Lib in Libraries){
       title = "QC Demultiplexing")
   
   ##  Cell counts for the different HTOs    ---------------------------
-  print(SeuratObj@meta.data %>% 
+  print(SeuratObj_pos96@meta.data %>% 
           dplyr::count(hash.ID) %>% 
           ggplot()+
           geom_bar(aes(x= hash.ID,
@@ -73,6 +109,83 @@ for(Lib in Libraries){
           scale_fill_manual(values = MyPalette)+
           labs(x= "",
                y= "",
+               title = paste0("Positive.quantile = 0.96"),
+               fill= "HTO")+
+          theme_bw()+
+          theme(axis.text = element_text(size = 11, face = "bold"),
+                legend.title = element_text(size = 12, face = "bold", colour = "darkred"),
+                plot.title = element_text(size = 15, face = "bold", colour = "darkred")))
+  
+  print(SeuratObj_pos97@meta.data %>% 
+          dplyr::count(hash.ID) %>% 
+          ggplot()+
+          geom_bar(aes(x= hash.ID,
+                       y= n,
+                       fill= hash.ID),
+                   width = 0.7,
+                   stat = "identity",
+                   position = "stack")+
+          scale_fill_manual(values = MyPalette)+
+          labs(x= "",
+               y= "",
+               title = paste0("Positive.quantile = 0.97"),
+               fill= "HTO")+
+          theme_bw()+
+          theme(axis.text = element_text(size = 11, face = "bold"),
+                legend.title = element_text(size = 12, face = "bold", colour = "darkred"),
+                plot.title = element_text(size = 15, face = "bold", colour = "darkred")))
+  
+  print(SeuratObj_pos98@meta.data %>% 
+          dplyr::count(hash.ID) %>% 
+          ggplot()+
+          geom_bar(aes(x= hash.ID,
+                       y= n,
+                       fill= hash.ID),
+                   width = 0.7,
+                   stat = "identity",
+                   position = "stack")+
+          scale_fill_manual(values = MyPalette)+
+          labs(x= "",
+               y= "",
+               title = paste0("Positive.quantile = 0.98"),
+               fill= "HTO")+
+          theme_bw()+
+          theme(axis.text = element_text(size = 11, face = "bold"),
+                legend.title = element_text(size = 12, face = "bold", colour = "darkred"),
+                plot.title = element_text(size = 15, face = "bold", colour = "darkred")))
+  
+  print(SeuratObj_pos99@meta.data %>% 
+          dplyr::count(hash.ID) %>% 
+          ggplot()+
+          geom_bar(aes(x= hash.ID,
+                       y= n,
+                       fill= hash.ID),
+                   width = 0.7,
+                   stat = "identity",
+                   position = "stack")+
+          scale_fill_manual(values = MyPalette)+
+          labs(x= "",
+               y= "",
+               title = paste0("Positive.quantile = 0.99"),
+               fill= "HTO")+
+          theme_bw()+
+          theme(axis.text = element_text(size = 11, face = "bold"),
+                legend.title = element_text(size = 12, face = "bold", colour = "darkred"),
+                plot.title = element_text(size = 15, face = "bold", colour = "darkred")))
+  
+  print(SeuratObj_pos995@meta.data %>% 
+          dplyr::count(hash.ID) %>% 
+          ggplot()+
+          geom_bar(aes(x= hash.ID,
+                       y= n,
+                       fill= hash.ID),
+                   width = 0.7,
+                   stat = "identity",
+                   position = "stack")+
+          scale_fill_manual(values = MyPalette)+
+          labs(x= "",
+               y= "",
+               title = paste0("Positive.quantile = 0.995"),
                fill= "HTO")+
           theme_bw()+
           theme(axis.text = element_text(size = 11, face = "bold"),
@@ -81,7 +194,7 @@ for(Lib in Libraries){
   
   ##  Compare number of UMI distributions across HTOs    --------------------
   print(VlnPlot(SeuratObj, features = "nCount_RNA", pt.size = 0.1, log = TRUE, group.by = "hash.ID")+
-          labs(title = "UMI distributions",
+          labs(title = paste0("UMI distributions at ", pos.quantile[[Lib]]),
                x= "")+
           scale_fill_manual(values = MyPalette))
   
@@ -693,6 +806,14 @@ for(Lib in Libraries){
            v4.cond = paste0(substr(Condition,1,1),"_",Phase,"_",Clonotype,"_",TCR),
            v4.clust = paste0(Clust_res0.1,"_",Phase,"_",Clonotype,"_",TCR))
   
+  
+  # ## Adding feature expression data to metadata   ------------------------------
+  # ftch <- FetchData(SeuratObj, 
+  #                   vars = intersect(Tall_markers, rownames(SeuratObj)), 
+  #                   layer = "data")
+  # SeuratObj@meta.data <- SeuratObj@meta.data %>% 
+  #   merge(ftch, by = 0) %>% 
+  #   column_to_rownames(var = "Row.names")
   
   
   ##  Save seuratobject       ------------------------------------------------

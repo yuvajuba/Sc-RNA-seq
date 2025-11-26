@@ -399,7 +399,7 @@ ui <- fluidPage(
                  "Table"
                ),
                fluidRow(
-                 dataTableOutput("tab2"),
+                 DT::dataTableOutput("tab2"),
                  div(
                    style = "margin-top:30px ; margin-bottom:30px",
                    downloadButton("download.tab","Download as excel", class = "btn-sm",
@@ -810,7 +810,7 @@ ui <- fluidPage(
                             style = "font-size:18px; background-color:midnightblue; font-weight:600; margin-bottom:30px;
                             border-radius:10px; margin-top:10px; border-color:cadetblue")),
         column(width = 9,
-               dataTableOutput("tab3"),
+               DT::dataTableOutput("tab3"),
                div(
                  style = "margin-top:20px; margin-bottom:40px",
                  downloadButton("download.tab.go","Download as excel", class = "btn-sm",
@@ -1093,7 +1093,7 @@ ui <- fluidPage(
     column(width = 9,
            div(
              style = "margin-bottom:30px",
-             dataTableOutput("gseaTab")
+             DT::dataTableOutput("gseaTab")
            ),
            div(
              style = "margin-bottom:30px",
@@ -1335,7 +1335,7 @@ server <- function(input, output, session){
   ## 5- Displaying results      ---------------------------------------------------
   
   ### p1: Datatable     -----------------------------------------------------------
-  output$tab2 <- renderDataTable({
+  output$tab2 <- shiny::renderDataTable({
     req(DEA_results())
     DEA_results()
   }, options = list(pageLength = 5, scrollX = T))
@@ -2046,7 +2046,7 @@ server <- function(input, output, session){
     updateSelectInput(session, "emapplot.show.cat", choices = go.tab[["Description"]])
   })
   
-  output$tab3 <- renderDataTable({
+  output$tab3 <- shiny::renderDataTable({
     req(go.tab())
     go.tab() %>% 
       dplyr::select(Description, GeneRatio, BgGenes, RichFactor, p.adjust) %>% 
@@ -2433,7 +2433,7 @@ server <- function(input, output, session){
   
   #### p1: Table        --------------------------------------------------------
   # GSEA table:
-  output$gseaTab <- renderDataTable({
+  output$gseaTab <- shiny::renderDataTable({
     req(GSEAobj())
     GSEAobj <- GSEAobj()
     res <- GSEAobj@result

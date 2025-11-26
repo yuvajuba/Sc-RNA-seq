@@ -1,0 +1,319 @@
+/* Global setting */
+
+* {
+    font-size: 16px;
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+body {
+    background-color: whitesmoke;
+}
+
+/* ----------------- Header setting --------- */
+
+.container-fluid {
+  padding: 0px;
+}
+
+.header-container {
+    padding: 0px;
+    width: 100%;
+    height: 250px;
+    background-color: #222;
+}
+
+.header-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.h1-head {
+    font-size: 5rem;
+    font-weight: 700;
+    color: gold;
+    margin: auto;
+    padding: 30px 60px;
+    text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.7);
+    text-align: center;
+    border: 10px ridge #999;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* .navbar-container {
+    margin: 0px 0px 20px 0px;
+    padding: 0px;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.nav-content {
+    width: 100%;
+    padding: 0px 10px;
+    margin: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+
+.title-nav {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    text-align: center;
+    margin: 5px 10px;
+    min-width: 50px;
+    max-width: 200px;
+
+}
+
+.title-nav:hover {
+    background-color: rgba(40, 97, 124, 0.404);
+}
+
+.nav-content > .active {
+    background-color: rgba(40, 97, 124, 0.404);
+    box-shadow: 0px 0px 4px #000;
+}
+
+.title-nav a {
+    text-decoration: none;
+    padding: 15px;
+    font-size: 1.8rem;
+    color: white;
+    text-shadow: 0px 0px 4px #000;
+} */
+
+
+/* ----------------- Body setting --------- */
+
+.section {
+    font-size: 3.2rem;
+    color: #802;
+    font-weight: 700;
+    max-width: 800px;
+    padding-bottom: 10px;
+    margin: 20px auto 30px auto;
+    text-align: center;
+    border-bottom: 8px double #082;
+    text-transform: uppercase;
+}
+
+.row {
+    margin: 10px 0px 30px 0px;
+    padding: 0px 10px;
+}
+
+.btn {
+    border-radius: 5px;
+}
+
+.btn-default {
+    background-color: #444;
+    color: #999;
+    border-color: #333;
+}
+
+.btn-default:hover {
+    background-color: #222;
+    color: #999;
+}
+
+.btn-1 {
+    background-color: #195b6ba2;
+    color: #000;
+    border-color: #195b6ba2;
+}
+
+.btn-1:hover {
+    background-color: #1b7288da;
+    box-shadow: 0px 0px 4px #222;
+}
+
+.btn-2 {
+    background-color: #196b39a2;
+    color: #000;
+    border-color: #196b39a2;
+}
+
+.btn-2:hover {
+    background-color: #1c8f48da;
+    box-shadow: 0px 0px 4px #222;
+}
+
+p.sm-title {
+    font-size: 2rem;
+    font-weight: 600;
+    padding-bottom: 5px;
+}
+
+p.md-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+p.red {
+    color: #800;
+    border-bottom: 4px solid #400;
+}
+
+p.green {
+    color: #080;
+    border-bottom: 3px solid rgb(6, 61, 6);
+}
+
+/* ----------------- I- Importing file section --------- */
+
+/* ---------------------- 1- Import section */
+.import-data-container {
+    border-radius: 5px;
+    padding: 0px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.import-file-container {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    width: 400px;
+}
+
+.shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+}
+
+.progress {
+    height: 17px;
+    border-radius: 5px;
+}
+
+.progress-bar {
+    background-color: rgba(8, 90, 28, 0.767);
+    font-size: 11px;
+}
+
+.import-file-container > pre {
+    background-color: #444;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 3px #999 inset;
+    color: #ccc;
+    font-size: 11px;
+}
+
+/* ---------------------- 2- Plot1 parmateres section */
+
+.plt1-params {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    width: 300px;
+    padding-bottom: 30px;
+    position: relative;
+}
+
+#plt1_view {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0 5px 5px 0;
+}
+
+/* ---------------------- 3- Plot1 section */
+
+.plt1-container {
+    height: auto;
+    min-width: 600px;
+    width: 50%;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    margin: 0px auto 10px;
+    padding: 0px;
+}
+
+#plt1 {
+    border-radius: 5px;
+}
+
+
+
+
+
+
+
+/* Media queries -- adjusting selectors according to page width */
+
+/* ------------------------------------- At max width of 1500px */
+@media (max-width: 1500px){
+    .h1-head {
+        font-size: 4.5rem;
+    }
+
+    .import-data-container {
+        display: flex;
+        flex-direction: column;
+        max-height: 800px;
+    }
+
+    .plt1-params {
+        width: 400px;
+    }
+
+    .plt1-container {
+        width: 60%;
+    }
+}
+
+
+/* ------------------------------------- At max 1120px width */
+@media (max-width: 1120px){
+    .h1-head {
+        font-size: 4rem;
+        padding: 30px 50px;
+    }
+
+    .section {
+        font-size: 3rem;
+        max-width: 700px;
+    }
+
+    .import-data-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .plt1-params {
+        width: 400px;
+    }
+
+    .plt1-container {
+        width: 60%;
+    }
+
+}
+

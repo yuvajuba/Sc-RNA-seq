@@ -58,6 +58,40 @@ MyPalette <- c(ColorPalettes$Personal,
                ColorPalettes$ggsci_jco,
                ColorPalettes$ggsci_futurama)
 
+
+## 4. T-ALL markers for manual annotation
+Tall_markers <- c(
+  # ---- T-lineage markers ----
+  "CD7", "CD2", "CD5", "CD1A", "CD3D", "CD3E", "CD3G", "CD10", "CD99", "CD117",
+  "TRAC", "TRBC1", "TRBC2", "TRDC", "TRGC1", "TRGC2", "TRAV", "TRBV", "TRAJ", "TRBJ",  # general VDJ gene families
+  # ---- Immaturity / stem like ----
+  "CD34", "DNTT", "CD38", "HLA-DRA", "HLA-DRB1",
+  # ---- Myeloid / progenitor cross-lineage markers ----
+  "KIT", "CD117", "CD13", "ANPEP", "CD33", "ITGAM", "ITGAX", "FCGR1A", "FCGR1B", "FCGR1C", "FCGR3A", "FCGR3B",
+  # ---- NK markers ----
+  "NCAM1", "KLRD1",
+  # ---- DP/cortical markers ----
+  "CD4", "CD8A", "CD8B",
+  # ---- Mature T markers ----
+  "LCK", "ZAP70", "LAT", "SLP76", "TRAT1",
+  # ---- NOTCH / early T cell commitment ----
+  "NOTCH1", "HES1", "DTX1", "DUSP6",
+  # ---- Cytokine signaling ----
+  "IL7R", "JAK1", "JAK3", "STAT5B",
+  # ---- Survival pathways ----
+  "BCL2",
+  # ---- FLT3 / RAS pathway ----
+  "FLT3", "NRAS", "KRAS", "PTPN11", "NF1",
+  # ---- Transcription factors (ETP / early) ----
+  "LYL1", "LMO2", "MEF2C", "HHEX", "MEIS1",
+  # ---- Later-arrest T-ALL factors ----
+  "TLX1", "TLX3", "HOXA9", "HOXA10", "TAL1", "TAL2", "LMO1", "MYB",
+  # ---- Epigenetic regulators ----
+  "EZH2", "SUZ12", "EED", "DNMT3A", "TET2", "IDH1", "IDH2"
+)
+
+
+
 rm(List_packages, load_or_install, function_files, prefer_dplyr)
 
 

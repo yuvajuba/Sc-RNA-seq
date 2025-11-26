@@ -1,0 +1,1297 @@
+---
+title: "T-ALL"
+author: "JB"
+date: "2025-11-14"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+
+
+
+```{css}
+.sm-red {
+  color: darkred;
+  font-size: 120%;
+  font-weight: 600;
+  border-bottom: 2px solid darkred;
+  padding-bottom: 3px;
+}
+
+.sm-green {
+  color: darkgreen;
+  font-size: 120%;
+  font-weight: 600;
+  border-bottom: 2px solid darkgreen;
+  padding-bottom: 3px;
+}
+
+.md-blue {
+  color: navy;
+  font-size: 150%;
+  font-weight: 600;
+  border-bottom: 3px solid navy;
+  padding-bottom: 3px;
+}
+
+h3 {
+  color: orangered;
+  font-weight: 700;
+  background-color: #ffff0055;
+  padding-bottom: 10px;
+}
+
+h4 {
+  color: purple;
+  font-weight: 600;
+  text-decoration: underline;
+  padding-bottom: 5px;
+}
+```
+
+
+# T cell Acute Lymphoblastic Leukemia (T-ALL)
+
+<br><br>
+
+## CHAT-GPT
+
+### Global classification of normal T cell development
+
+This is the immunology view, independent of leukemia.
+
+__A. ETP stage__
+
+Very immature, not committed yet.
+
+__B. Double-Negative (DN) stages__
+
+_They do NOT express CD4 or CD8._
+
+- DN1 / Pro-T
+
+- DN2 / Early Pre-T
+
+- DN3 / Pre-T
+
+- DN4 / Late Pre-T
+
+__C. Double-Positive (DP) stage__
+
+_Cells expressing CD4+ AND CD8+._
+
+__D. Single Positive (SP) stage__
+
+_Either CD4+ OR CD8+._
+
+
+### Classification of T-ALL
+
+__📌 1. ETP-ALL__
+
+Corresponds to:
+
+__ETP stage__
+
+_(very immature thymic progenitors)_
+
+__📌 2. Pro-T / Pre-T T-ALL__
+
+Corresponds to:
+
+__DN1 → DN4__
+
+_Pro-T = DN1_
+
+_Early Pre-T = DN2_
+
+_Pre-T = DN3_
+
+_Late Pre-T = DN4_
+
+This group is sometimes called “__Early Cortical T-ALL__” but the naming varies.
+
+__📌 3. Cortical T-ALL__
+
+Corresponds to:
+
+__DP stage (CD4+CD8+)__
+
+_This is the most common immunophenotype in T-ALL._
+
+__📌 4. Mature T-ALL__
+
+Corresponds to:
+
+__SP stage (CD4+ or CD8+)__
+
+_May express TCR αβ or γδ strongly._
+
+
+
+### Different stages in details  {.tabset .tabset-pills}
+#### DP to SP stage:
+
+This happens in the thymus, mainly in the cortex --> medulla transition
+
+[Biologically]{.sm-red}
+
+__1- Positive selection in the cortex:__
+
+DP cells test their TCR to recognize self-MHC
+
+This step ensures : functional TCR and the ability to recognize antigens presented by MHC
+
+__2- Lineage decision (CD4 or CD8):__
+
+Which MHC does the TCR prefer --> if the TCR binds to MHC II, cell becomes CD4, if MHC I, CD8 
+
+__3- Negative selection in the medulla:__
+
+Now the SP cells enter the thymic medulla.
+
+They are tested again, this time to remove cells that bind self-antigens TOO strongly.
+
+This prevents autoimmunity.
+
+- Too strong binding → apoptosis
+- Just right → survive
+
+
+[Genetically]{.sm-red}
+
+__TCR α-chain rearrangement completes__
+
+- DP cells finish rearranging the TCR α chain
+- They express a full TCR αβ receptor
+- Selection depends on this full TCR
+
+__No more major rearrangements afterward__
+
+- Once the cell commits to CD4 or CD8:
+- TCR genes are fixed
+- RAG1/RAG2 (recombination enzymes) are shut off
+
+__Transcription factors decide the lineage__
+
+- Two key transcription factors:
+- ThPOK → forces CD4 lineage
+- Runx3 → forces CD8 lineage
+
+_They mutually inhibit each other so the cell commits to one fate._
+
+
+[About T-ALL]{.sm-red}
+
+__✅ 1. If the leukemic cells are in the SP stage → it is a Mature T-ALL__
+
+
+At this point the normal T cell has:
+
+- finished selection
+
+- chosen CD4 or CD8
+
+- fully rearranged TCR α and β
+
+- stopped RAG activity
+
+So if cancer starts here → __Mature T-ALL.__
+
+
+__✅ 2. Mature T-ALL often shows strong TCR expression__
+
+Because in this stage:
+
+- TCRβ (TRBV, TRBD, TRBJ) rearrangement is complete
+
+- TCRα (TRAV, TRAJ) rearrangement is complete
+
+- The TCRαβ is fully surface-expressed
+
+Thus in scRNA-seq + VDJ profiling you expect to see:
+
+- detected TRBV… sequences
+
+- detected TRAV… sequences
+
+- often productively rearranged chains
+
+- sometimes clonal (many cells with identical TCR)
+
+This matches the biology of SP/Mature T-cells.
+
+
+__✅ 3. If VDJ data is missing → likely an earlier developmental block__
+
+If you see:
+
+- no TCRα
+
+- no TCRβ
+
+- incomplete rearrangements or non-productive rearrangements
+
+__→ the leukemic clone is probably NOT Mature T-ALL.__
+
+
+It might correspond to:
+
+__ETP-ALL__
+
+- almost no rearrangement
+
+- weak or absent TCRβ expression
+
+__Pro-T / Pre-T T-ALL__
+
+- TCRβ rearrangement may be starting
+
+- TCRα usually absent
+
+__Cortical T-ALL__
+
+- often TCRβ positive, TCRα incomplete
+
+
+[About T-ALL markers]{.sm-red}
+
+__Strongly positive in Mature T-ALL__
+
+- sCD3+++
+
+- CD2++/+++
+
+- CD5++/+++
+
+- CD7+++
+
+- CD4+++ or CD8+++
+
+- TCRαβ+++ or TCRγδ+++
+
+- Productive TRAV/TRBV or TRGV/TRDV sequences
+
+
+__Negative in Mature T-ALL__
+
+- CD34–
+
+- CD1a–
+
+- TdT– (or very weak)
+
+- CD10–
+
+- CD99–/low
+
+
+
+[About genetic defects at this stage]{.sm-red}
+
+✅ 1. TCR pathway–related oncogenes (because TCR is fully active at this stage)
+
+__NOTCH1 activating mutations → very common__
+
+- Increases survival
+
+- Enhances T-cell differentiation signals
+
+- Present in >70% of mature T-ALL cases
+
+__FBXW7 loss-of-function__
+
+- Stabilizes NOTCH1
+
+- Works together with NOTCH1 mutations
+
+
+✅ 2. Translocations involving TCR loci
+
+_Because TCRα/β are fully rearranged at this stage, the TCR loci become active targets for translocations._
+
+- t(10;14)(q24;q11) → __TLX1 overexpression__
+
+- t(7;10)(q34;q24) → __TLX1 / TLX3 activation__
+
+- t(14;14) or inv(14) → __activates TAL2__
+
+
+✅ 3. Transcription factors typical of cortical → mature stage
+
+_These are NOT found in early T-ALL._
+
+- __TLX1 (HOX11)__ → very characteristic of late cortical/mature T-ALL
+- __TLX3 (HOX11L2)__ → similar effect
+- __TAL2__ → TCR-associated activation
+- __NKX2-1 / NKX2-2__ → in small subsets of mature T-ALL
+
+These genes block normal thymocyte selection and commit cells to malignant SP-like identity.
+
+
+✅ 4. γδ T-ALL–specific alterations (if gamma-delta lineage)
+
+- __TRG/TRD locus rearrangements__
+- __IDH2 R172 mutations (in a subset of mature γδ T-ALL)__
+
+
+✅ 5. Cell-cycle / proliferation mutations (late-stage compatible)
+
+_These help the transformed SP cell expand:_
+
+- __CDKN2A/B deletions (very common)__
+
+- __PTEN mutations__
+
+- __PIK3CA, AKT pathway activation__
+
+- __MYB duplications__
+
+- __MYC activation (less common but possible)__
+
+
+
+[Genetic defects SUMMARY]{.sm-green}
+
+_(only what truly defines the mature stage)_
+
+__✔ Strongly associated with Mature T-ALL__
+
+- NOTCH1 mutations
+- FBXW7 mutations
+- TLX1 overexpression
+- TLX3 overexpression
+- TAL2 activation
+- CDKN2A/B deletions
+- TCR-locus translocations (TRAV/TRBV acting as enhancers)
+
+
+__✘ Rare in mature stage (more early-stage)__
+
+- KMT2A
+- BCL11B enhancer fusions
+- LMO1/2
+- HOXA cluster activation
+
+(these are ETP/Pro-T signatures)
+
+
+
+
+#### DN4 to DP stage:
+
+This is the transition from late pre-T cell to cortical thymocyte.
+
+
+[Biologically]{.sm-red}
+
+__1️⃣ β-selection (at DN3/DN4)__
+
+- The cell successfully rearranges TCRβ.
+- It pairs TCRβ with pre-Tα → forms the pre-TCR.
+- This generates a strong survival/proliferation signal.
+
+If this checkpoint is passed → the cell becomes DN4.
+
+
+__2️⃣ Rapid proliferation__
+
+DN4 cells proliferate heavily to expand the pool of T cells that have a functional β-chain.
+
+
+[Genetically]{.sm-red}
+
+__3️⃣ Start expressing CD4 and CD8__
+
+The cell begins to upregulate both → becoming Double-Positive (DP).
+
+At this stage:
+
+- CD4+CD8+ are both high
+- The cell moves into the thymic cortex
+
+
+__4️⃣ TCRα rearrangement begins__
+
+This is the major genetic process here.
+
+- RAG1/RAG2 are reactivated
+- TRA locus (TCRα) undergoes V–J recombination
+- Many attempts occur until a productive α-chain is made
+
+
+
+__🎯 SUMMARY of DN4 → DP transition__
+
+- TCRβ is already rearranged (productive)
+- CD4 and CD8 are both expressed
+- TCRα rearrangement starts
+- Pre-TCR signaling → massive proliferation
+- Selection has NOT occurred yet
+
+Cortical T-ALL arises from this exact developmental context.
+
+
+
+[About T-ALL markers]{.sm-red}
+
+MARKERS of Cortical (DP) T-ALL
+
+__A. Core positive markers (DP identity)__
+
+DP signature
+
+- CD4 → +++
+- CD8 → +++
+
+_(Strong coexpression is the hallmark.)_
+
+T-cell lineage
+
+- cytoplasmic CD3 (cCD3) → +++
+- surface CD3 → +/– or weak
+- CD2 → ++
+- CD5 → ++
+- CD7 → +++
+
+_Surface CD3 is weak because TCRα is still incomplete._
+
+
+__B. Cortical T-ALL–specific markers__
+
+_These are very characteristic:_
+
+- CD1a → +++ (key hallmark!)
+- CD99 → ++/+++
+- CD38 → ++/+++
+
+
+__C. Negative / weak markers__
+
+_These mark earlier stages, so they are usually absent:_
+
+- CD34 → –
+- TdT → +/– (can be weak)
+- CD10 → – or weak
+
+
+__D. TCR / VDJ status__
+
+The most informative part:
+
+__TCRβ__
+
+- Usually productive and expressed
+- Often detectable TRBV… genes
+
+__TCRα__
+
+- Rearrangement initiated but incomplete
+
+You may see:
+
+- few TRAV/TRAJ productive hits
+- or non-productive rearrangements
+- or no α-chain at all (very common)
+
+__RESULT:__
+
+Cortical T-ALL typically shows:
+
+- β-chain detected
+- α-chain partially or not detected
+
+_This matches the biology of DP thymocytes._
+
+
+
+[Summary genetic defects cortical T-ALL]{.sm-green}
+
+__✔ Exclusive/typical of Cortical T-ALL:__
+
+TLX1, TLX3, TAL1, TAL2, LMO1/2, SIL–TAL1, LEF1
+
+
+__✔ Enriched in Mature T-ALL:__
+
+Strong TCR-locus translocations → TLX1/TLX3/TAL2,
+NOTCH1 + FBXW7,
+IDH2 R172 (γδ)
+
+
+__✔ Shared:__
+
+CDKN2A/B deletions, PTEN, PI3K-AKT, MYB
+
+
+
+#### DN2-DN4 (early pre-T - late pre-T) T-ALL
+
+[Why DN2, DN3, and DN4 can be grouped together ?]{.sm-green}
+
+
+__1. They all share the core “pre-T” phenotype__
+
+- CD7+++, CD2+, CD5+
+- cCD3+++
+- TdT high
+- CD4– CD8– (double negative)
+- Surface CD3–, Surface TCR–
+
+__2. They all lack cortical markers__
+
+- CD1a–
+- No CD4/CD8 coexpression
+- No TCRα rearrangement
+
+__3. Their molecular programs overlap strongly__
+
+- TCRB locus is rearranging or already rearranged
+- NOTCH1-dependent stage
+- IL-7R/JAK-STAT signaling active
+- LIM-only 2 / LMO1/2, TLX1/3, TAL1/2 activation can occur here
+
+__4. Diagnostic immunophenotyping cannot cleanly separate DN2 from DN3/DN4__
+
+CD34 helps a bit (DN2/early DN3), but overlap is huge.
+Clinically, DN2-like T-ALL does not behave differently from DN3/4 either.
+
+__👉 Therefore, DN2–DN4 are safely lumped together as PRE-T T-ALL.__
+
+
+
+#### DN1 (pro-T T-ALL)
+
+[Markers]{.sm-green}
+
+- CD34++ even more
+- CD7+, but CD2–, CD5–/weak
+- cCD3– or very weak+
+- TdT+
+- CD4– CD8– CD1a–
+- No TCR rearrangement (no TRB, no TRD)
+
+
+[Biology]{.sm-green}
+
+These cells are still multipotent thymic progenitors → share features with early thymic precursor ALL (ETP-ALL)
+
+
+[Clinical relevance]{.sm-green}
+
+DN1/Pro-T overlaps with ETP-ALL, a high-risk category with:
+
+- FLT3 mutations
+- RAS-pathway mutations
+- myeloid markers (CD13/CD33/CD117)
+- More chemoresistance
+
+
+#### ETP to pro-T ALL
+
+[1. NORMAL DEVELOPMENT: ETP → Pro-T (DN1)]{.sm-green}
+
+All of this happens in the thymus, mainly the cortex → subcapsular region.
+
+
+__ETP (Early Thymic Progenitor)__
+
+- Just arrived from the bone marrow.
+- Still multipotent → can become T, NK, dendritic, even myeloid.
+- Very stem-cell-like.
+
+__Transition toward Pro-T (DN1)__
+
+- This is the earliest T-lineage commitment step.
+
+
+[Biology]{.sm-red}
+
+__Notch1 signaling switches on strongly__
+
+- Thymic epithelial cells provide DLL4 ligand.
+- NOTCH1 tells the cell: “Become a T cell, shut down other fates.”
+
+
+__Loss of alternative lineage programs__
+
+- Myeloid program suppressed
+- B-cell program suppressed (via NOTCH1 → HES1)
+
+
+__Minimal T-cell gene activation begins__
+
+- CD7 (first T marker)
+- Low CD5
+- Very low/absent CD2
+- Very weak cytoplasmic CD3 (sometimes)
+
+
+__No TCR rearrangement yet__
+
+- RAG1/2 are not fully active.
+- TRD/TRG/TRB loci are still in germline configuration.
+
+
+__Cell is highly proliferative__
+
+- Driven by IL-7 signaling
+- High BCL2 survival
+- This is the most immature T stage inside the thymus.
+
+
+
+[2. GENETICS ACTIVE DURING NORMAL DN1 STAGE]{.sm-green}
+
+_These are gene programs normally on:_
+
+
+__“Stem-like” / ETP-like program__
+
+- LYL1
+- LMO2
+- HHEX
+- MEIS1
+
+
+__NOTCH1-dependent early T program__
+
+- HES1
+- DTX1
+- DUSP6
+
+
+__Survival/proliferation__
+
+- BCL2 high
+- IL7R/JAK-STAT activity
+
+
+__TCR genes__
+
+- Not rearranging yet
+- TRD, TRG, TRB all germline
+
+
+
+[3. PRO-T (DN1) T-ALL]{.sm-green}
+
+This is the leukemic version of DN1.
+
+It overlaps heavily with ETP-ALL, which is clinically important.
+
+
+[Markers (very characteristic)]{.sm-red}
+
+__T-lineage markers__
+
+- CD7+++ (almost always the strongest)
+- CD5– or weak+
+- CD2–
+- cCD3– or very dim
+
+__Immaturity markers__
+
+- CD34+++
+- TdT+
+- CD4– CD8– CD1a– (triple negative)
+
+__TCR status__
+
+- No TRB rearrangement
+- No TRD rearrangement
+- No TRG rearrangement
+ → VDJ completely absent
+
+
+__Myeloid/NK markers — very common__
+
+_This is what gives Pro-T (DN1) its ETP-ALL flavor:_
+
+- CD117+
+- CD13+
+- CD33+
+- CD11b/11c sometimes
+- CD56 sometimes
+
+__Surface CD3 always negative__
+
+__This is the least differentiated T-ALL subtype.__
+
+
+
+[4. Genetic defects typical of Pro-T (DN1) T-ALL]{.sm-green}
+
+_These differ from more mature T-ALL stages._
+
+__Most characteristic mutations__
+
+- FLT3 activating mutations (very common)
+
+- RAS pathway: NRAS/KRAS
+
+- NOTCH1 (can be present but less dominant than in cortical)
+
+- DNMT3A, TET2, IDH1/2 (myeloid-like mutations)
+
+- EZH2, SUZ12, EP300 (chromatin modifiers)
+
+
+__Transcription factor deregulation (ETP-like)__
+
+- LYL1 overexpression
+
+- LMO2 overexpression
+
+- MEF2C upregulation
+
+These keep the cell in a stem-like developmental arrest.
+
+
+__What is usually NOT seen__
+
+- TLX1, TLX3, HOXA, TAL1 — rare at this earliest stage
+
+(those belong to DN2–DN4 or cortical T-ALL)
+
+<br><br>
+
+[5. ETP-ALL — Immunophenotype (marker list)]{.sm-green}
+
+__1. Positive T-lineage markers__
+
+- CD7+++ (very strong, almost always)
+
+- cCD3− or very dim
+
+- CD5− or very weak (≤75% of blasts, often <20%)
+
+- CD2− or dim
+
+- CD4− CD8−
+
+__2. Immaturity markers__
+
+- CD34+++
+
+- TdT+
+
+- CD38+/− (variable)
+
+__3. Negative cortical/mature markers__
+
+- CD1a−
+
+- Surface CD3−
+
+- TCRγδ, TCRαβ absent
+
+- No TRB/TRD/TRG rearrangement (germline)
+
+__4. “Stemlike / myeloid” markers (very characteristic)__
+
+_ETP-ALL expresses many myeloid/progenitor antigens:_
+
+- CD117 (c-Kit)+
+
+- CD13+
+
+- CD33+
+
+- CD11b+ (sometimes)
+
+- CD11c+ (sometimes)
+
+- CD64+/−
+
+- CD71+/−
+
+- HLA-DR+
+
+_These are what make ETP-ALL look “mixed phenotype”._
+
+__5. NK-lineage markers__
+
+- CD56+/− (variable)
+
+
+
+[What ETP-ALL lacks]{.sm-red}
+
+__These absences are essential for diagnosis:__
+
+- CD1a−
+
+- sCD3−
+
+- CD4− / CD8− (double negative)
+
+- TCR VDJ rearrangements absent
+
+- No β-selection markers (pre-TCR−)
+
+
+__ETP-ALL is diagnosed when:__
+
+- CD1a−, CD8−, CD5 weak (≤75% of blasts)
+
+__AND ≥1 of the following myeloid/stem markers:__
+
+- CD117, CD34, HLA-DR, CD13, CD33, CD11b, CD65
+
+_This fits DN1 / Pro-T biology._
+
+
+
+
+
+### All the markers
+
+```{r ,echo=TRUE}
+all_markers <- c(
+  # ---- T-lineage markers ----
+  "CD7", "CD2", "CD5", "CD1A", "CD3D", "CD3E", "CD3G",
+  "TRAC", "TRBC1", "TRBC2", "TRDC", "TRGC1", "TRGC2",
+  "TRAV", "TRBV", "TRAJ", "TRBJ",  # general VDJ gene families
+  "CD10", "CD99", "CD8", "CD117", 
+
+  # ---- Immaturity / stemlike ----
+  "CD34", "DNTT", "CD38", "HLA-DRA", "HLA-DRB1",
+
+  # ---- Myeloid / progenitor cross-lineage markers ----
+  "KIT", "CD117", "CD13", "ANPEP", "CD33", "ITGAM", "ITGAX",
+  "FCGR1A", "FCGR1B", "FCGR1C", "FCGR3A", "FCGR3B",
+
+  # ---- NK markers ----
+  "NCAM1", "KLRD1",
+
+  # ---- DP/cortical markers ----
+  "CD4", "CD8A", "CD8B",
+
+  # ---- Mature T markers ----
+  "LCK", "ZAP70", "LAT", "SLP76", "TRAT1",
+
+  # ---- NOTCH / early T cell commitment ----
+  "NOTCH1", "HES1", "DTX1", "DUSP6",
+
+  # ---- Cytokine signaling ----
+  "IL7R", "JAK1", "JAK3", "STAT5B",
+
+  # ---- Survival pathways ----
+  "BCL2",
+
+  # ---- FLT3 / RAS pathway ----
+  "FLT3", "NRAS", "KRAS", "PTPN11", "NF1",
+
+  # ---- Transcription factors (ETP / early) ----
+  "LYL1", "LMO2", "MEF2C", "HHEX", "MEIS1",
+
+  # ---- Later-arrest T-ALL factors ----
+  "TLX1", "TLX3", "HOXA9", "HOXA10", "TAL1", "TAL2", "LMO1", "MYB",
+
+  # ---- Epigenetic regulators ----
+  "EZH2", "SUZ12", "EED",
+  "DNMT3A", "TET2",
+  "IDH1", "IDH2"
+)
+
+```
+
+
+<br><br><br>
+
+## Article 1 (2023)
+
+https://pmc.ncbi.nlm.nih.gov/articles/PMC10646822/
+
+
+### Early T cell precursor ALL
+
+- Defined by immunophenotype: classically, <75% CD5+ blasts, negative for CD1a and CD8, with expression of stem cell/myeloid markers (like CD117, CD34, HLA-DR, CD13, CD33, etc.).
+
+- Genetically heterogeneous disease.
+- Around 1/3 of ETP-ALL harbor BCL11B-activating alterations
+- These alterations converge to form a transcriptionally similar entity known as BCL11B-activated leukemia (BCL11B-a)
+
+
+__So the markers here are:__
+
+- CD5: <75% expression (i.e., low or negative)
+- CD1a: negative
+- CD8: negative
+- Stem cell / myeloid markers: often positive
+  - Examples (not in the passage but standard): __CD34__, __CD117__, __HLA-DR__, __CD13__, __CD33__
+
+
+### Near ETP-ALL
+
+Immunophenotype similar to ETP, but with CD5 expression ≥75%.
+
+Both are heterogeneous
+
+Genetic is different though
+
+- Enriched in TLX3 rearrangements.
+- Lacks the consistent BCL11B-a pattern seen in ETP-ALL.
+- BCL11B::TLX3 fusion may occur, but without BCL11B activation.
+
+
+### TAL1/2-r
+- **Frequency**: Approximately 30–40% of T-ALL cases.
+- **Genetics**: Rearrangements involving TAL1 (most commonly STIL::TAL1) and less frequently TAL2.
+- **Phenotypic markers**: Late cortical thymocyte profile, typically CD4⁺ or CD8⁺.
+
+### TLX3-r
+- **Frequency**: ~20–25% in children; <5% in adults.
+- **Genetics**: TLX3 rearrangements, including BCL11B::TLX3 (distinct from BCL11B-activated cases).
+- **Phenotypic markers**: CD4⁺CD8⁺CD1a⁺ immunophenotype.
+
+### TLX1-r
+- **Frequency**: ~5–10% in children; up to 30% in adults.
+- **Genetics**: TLX1 rearrangements.
+- **Phenotypic markers**: Similar to TLX3-r — CD4⁺CD8⁺CD1a⁺ profile.
+
+### HOXA-dysregulated
+- **Frequency**: 15–25% of T-ALL cases.
+- **Genetics**: Diverse alterations activating HOXA expression, including HOXA::TRB/TRG, KMT2A-r, PICALM::MLLT10, and SET::NUP214.
+- **Phenotypic markers**: Immature immunophenotype, with some cases meeting ETP-ALL criteria.
+
+### LMO1/2-r
+- **Frequency**: LMO1-r ~5%, LMO2-r ~10%.
+- **Genetics**: Rearrangements involving LMO1 or LMO2, associated with high LMO protein expression.
+- **Phenotypic markers**: Immature phenotype.
+
+### BHLH, other
+- **Frequency**: <2% of cases.
+- **Genetics**: Includes TRB::LYL1 and TCR::OLIG2/BHLHB1 fusions, often showing strong LMO expression.
+- **Phenotypic markers**: Generally immature phenotype (not precisely defined).
+
+### SPI1-r
+- **Frequency**: <5%, mainly reported in pediatric cases.
+- **Genetics**: Rearrangements involving SPI1 and partners such as STMN1, TCF7, and BCL11B.
+- **Phenotypic markers**: Notable HLA-DR expression on blasts.
+
+### NKX2-r
+- **Frequency**: <5%, mostly in children.
+- **Genetics**: Rearrangements involving NKX2.1, NKX2.2, or NKX2.5 with various partners.
+- **Phenotypic markers**: Not yet well characterized.
+
+
+<br><br><br>
+
+## Article 2 (2025)
+
+https://pmc.ncbi.nlm.nih.gov/articles/PMC12133571/
+
+<br>
+
+__Used methods :__ whole transcriptome, exome, or genome sequencing as well as immunophenotyping and cytogenetic testing
+
+<br>
+
+This review synthesizes the data from four T-ALL genomic landscape studies establishing consensus and highlighting differences, details clinical outcomes for the most common genomic alterations observed in T-ALL patients, and proposes novel avenues for future investigation and treatment.
+
+<br><br>
+
+We have identified four major T-ALL genomic subtype defining publications [14–17]. Though there is broad agreement on subtypes such as MLLT10r and KMT2Ar, several genomic subtypes differ between these four papers due to variations in cohorts and methods of classification, summarized in Table 1. One of the first descriptions of the T-ALL genomic landscape came from the North American Children’s Oncology Group (264 children and young adults aged 1-29). Liu et al. utilized whole exome sequencing (WES) and transcriptomic sequencing to define 8 patient subtypes [15]. Two separate subsequent studies focussed on gene fusions and other structural alterations as the main subtype-defining lesions. The first, by Dai et al., was a large international cohort, (707 patients; 510 pediatric aged 1-17, 190 AYA/adults aged 18-75, 7 unknown) using mutational profiles and dysregulated gene expression signatures of leukemogenic factors to define 10 subtypes [14]. These findings were recapitulated by Müller et al. (131 patients; 6 pediatric, 62 adolescent and young adults (AYA), and 63 adults) using diagnostically available techniques including karyotyping and FISH [16]. The latest Children’s Oncology Group study by Pölönen et al. (1309 patients, including those reported in Liu et al. [15]; pediatric and AYA patients up to 30 years) grouped cases into 15 genomic subtypes based on whole genome (WGS), transcriptome (WTS), and WES analyses; the assay for transposase-accessible chromatin with sequencing (ATAC-seq) and sequencing chromosome conformation capture and interaction immunoprecipitation (HiChIP) were utilized for non-coding mutations and structural variations [17]. Details of the patient cohorts are described in Table 2.
+
+<br><br>
+
+### The old school: subtype classification based on immunophenotype and cytogenetics
+
+<br>
+
+
+
+[ETP-ALL Overview]{.sm-red}
+
+* **Immunophenotypic definition**: ETP-ALL is identified by the absence of surface CD3 (sCD3-), positivity for CD7, negativity for CD1a and CD8, dim or negative CD5 expression (<75%), and co-expression of one or more **myeloid markers** (CD11b, CD13, CD33, CD117) or **stem cell markers** (CD34, HLA-DR). Cytoplasmic CD3 (cCD3) is frequently observed.
+
+* **Near-ETP ALL**: Cases that resemble ETP immunophenotypically but show strong CD5 expression (≥75%). These are **not formally classified** as ETP but may share biological similarities.
+
+* **Genetic alterations**:
+
+  * Enriched in **LYL1/LMO2** transcription factor subtype (seen in ~37-44% of ETP cases).
+  * Common genomic events:
+
+    * Fusions involving **HOXA13**, **MED12** with **ETV6** or **ZFP36L2** (~42% of ETP cases; ~12% of all T-ALL)
+    * Deregulation of **HOXA9/10/11** via rearrangements such as **NUP98**, **NUP214**, **KMT2A**, **MLLT10** (~30% of ETP cases; ~7% of all T-ALL)
+    * **BCL11B-driven** cases are almost exclusively observed in ETP-ALL
+
+* **Prognosis**:
+
+  * Historically associated with **poor overall and event-free survival**, especially in pediatric and adult patients.
+  * Current strategies using **early risk stratification** and **intensified chemotherapy** have significantly improved outcomes, particularly in children.
+
+* **Relapse patterns**:
+
+  * ETP patients tend to develop **refractory disease** more often than classic relapse, distinguishing them from non-ETP T-ALL.
+
+* **Toward an ETP-like classification**:
+
+  * A broader **"ETP-like" subtype** is emerging, enriched in ETP cases with diverse **genomic drivers** related to hematopoietic stem cell (HSC) development.
+  * This reflects a shift from pure immunophenotype-based classification to **molecularly-informed subtyping**.
+
+---
+
+[Classic Immunophenotypic Classification (EGIL)]{.sm-red}
+
+The European Group for the Immunologic Classification of Leukemia (EGIL) previously defined 4 major immunophenotypic stages based on T-cell differentiation:
+
+* **Pro-T**: cCD3+, sCD3-, CD1a-, CD2+, CD5-, CD7+, CD34-
+* **Pre-T / Immature**: cCD3+, sCD3-, CD1a-, CD2+, CD5+, CD7+, CD34-
+* **Cortical-T**: cCD3+, sCD3+/-, CD1a+, CD2+, CD5+, CD7+, CD34-
+* **Mature-T**: cCD3+, sCD3+, CD1a-, CD2+, CD5+, CD7+, CD34-
+
+This classification remains useful in flow cytometry-based diagnosis but is now being complemented by more **transcriptomic and genomic subtyping** approaches.
+
+
+
+### The new school: subtype classification based on next-generation sequencing (NGS)
+
+
+
+[NGS-based Classification of T-ALL ("New School")]{.sm-green}
+
+__WTS (Whole Transcriptome Sequencing):__ Measures gene expression by reading transcribed mRNA. Most commonly used and informative for T-ALL subtype analysis.
+
+__WES (Whole Exome Sequencing):__ Focuses on the exonic regions coding for proteins.
+
+__WGS (Whole Genome Sequencing):__ Covers both coding and non-coding regions (e.g., promoters), important for identifying enhancer hijacking and other regulatory mutations.
+
+
+- __Importance of WGS:__ Subtypes like BCL11B-activated and LMO2-activated T-ALL often involve non-coding alterations missed by transcriptomic approaches. WGS enables accurate classification by capturing such events.
+
+
+
+[ETP-like ALL (including NUP98r, SET::NUP214, GATA3)]{.sm-red}
+
+- Broad subgroup defined by WTS gene expression, not by immunophenotype alone; includes ETP, near-ETP, and non‑ETP cases that cluster together transcriptomically.
+
+- Characterized by multiple recurrent driver alterations affecting hematopoietic stem cell (HSC) development.
+
+- Key genomic events include:
+- HOXA13 enhancer hijacking via BCL11B/TCR enhancers
+- Rearrangements involving MLLT10, KMT2A, NUP214, NUP98
+- SET::NUP214 fusion (often ETP-like phenotype; ~45%)
+- NUP98 rearrangements (e.g., NUP98::RAP1GDS1, CCDC28A, LNP1, PSIP1)
+- MED12 loss-of-function mutations
+- ZFP36L2 rearrangements
+- ETV6 alterations
+- GATA3 mutations (mostly DNA‑binding domain) found in a distinct but related subset; associated with an ETP-like transcriptomic profile.
+- Expression patterns and subtype identity may partially reflect cell‑cycle arrest stage and oncogenic driver activity.
+
+- __Markers:__
+  - Cluster shows an ETP-like immunophenotype (frequent): typically cCD3+, CD7+, CD1a–, CD8–, CD5 low/negative (<75%), with expression of one or more myeloid or stem-cell markers (e.g., CD11b, CD13, CD33, CD117, CD34, HLA‑DR).
+
+
+
+
+[BCL11B alterations]{.sm-red}
+
+- BCL11B is a C2H2-type zinc finger transcriptional repressor. Its alterations are strongly associated with T-ALL development and define a distinct genomic subtype in some cohorts.
+- These alterations often result from noncoding translocations and enhancer hijacking.
+- Up to 94% of BCL11B-activated cases present an ETP immunophenotype and typically **lack** NOTCH1 and PHF6 mutations, as well as CDKN2A deletions.
+- They frequently show **high expression of KIT and LMO2**, **low RAG1/RAG2 expression**, and often harbor **activating FLT3 mutations** — all features aligning with ETP-ALL.
+- In adults, **low BCL11B expression is associated with worse survival** (5-year OS: 35% vs. 53%, p = 0.02), while no difference in prognosis is observed in pediatric patients.
+- Presence of FLT3 mutations opens avenues for **targeted therapies** like sorafenib or quizartinib, which have shown clinical benefit in FLT3-mutated leukemias.
+
+- **Markers**: ETP-like immunophenotype in most cases (≥94%), high **KIT**, **LMO2**, low **RAG1/2**, often **FLT3 mutated**.
+
+
+
+
+[SPI1-rearranged disease]{.sm-red}
+
+- SPI1 encodes PU.1, a key transcription factor regulating hematopoietic development. Rearrangements (SPI1r) lead to aberrant PU.1 expression.
+- This subtype exhibits **low expression of T-cell markers** (CD1a, CD2, CD3e, CD4, CD8a) and **high expression of the myeloid marker CD33**, suggesting a **myeloid-like phenotype** and potentially requiring **intensive therapy**, similar to ETP-ALL.
+- Known fusion partners include **TCF7**, **STMN1**, and **YWHAE**.
+- SPI1r is associated with **very poor prognosis**; in pediatric cohorts, 2-year OS was only ~50%.
+- Patients with SPI1 alterations have an increased risk of **secondary malignant neoplasms**, especially of **myeloid/dendritic origin**, though these were **not linked to MRD**.
+
+- **Markers**: Low expression of **CD1a, CD2, CD3e, CD4, CD8a**; high expression of **CD33** (myeloid marker).
+
+
+
+
+[HOX gene dysregulation]{.sm-red}
+
+- HOX genes regulate gene expression, morphogenesis, and differentiation. Their dysregulation is a driver in several T-ALL subtypes.
+- **HOXA dysregulation** arises via:
+  - **Cis mechanisms**: e.g., enhancer hijacking through noncoding translocations.
+  - **Trans mechanisms**: e.g., fusion events involving oncogenes that activate the HOXA cluster.
+- HOXA-driven T-ALL generally exhibits an **immature immunophenotype**, reflecting HOX roles in early development.
+- **HOXA11** is associated with **intermediate-risk**, though survival differences are modest.
+- **HOXA13 alterations** (especially in ETP-like context) are linked to **high-risk** disease with worse event-free survival (EFS) and minimal residual disease (MRD) outcomes.
+
+- **Markers**: Not specifically listed for HOX-driven subtypes, but cases typically show an **immature T-cell phenotype**.
+
+
+
+
+[TLX1/TLX3 dysregulation and PTPN2 deletion]{.sm-red}
+
+- TLX1 and TLX3 are transcription factors not normally involved in hematopoiesis; their aberrant expression in T-ALL often arises from TCR rearrangements, enhancer hijacking, or intergenic inversions.
+- TLX3 alterations tend to associate with **near-ETP-like immunophenotype** and **PRC2 gene alterations**, while TLX1 alterations are more often found in **non-ETP T-ALL**.
+- **Enhancer hijacking**: TLX1 uses LINC00592 or TCRβ/δ loci; TLX3 uses BCL11B, CDK6, MYC, or TCRβ loci.
+- Deletion of **PTPN2**, frequently co-occurring with TLX1 deregulation, activates PI3K-AKT-mTOR signaling; **CDKN2A/B deletions** and **PHF6 mutations** are common to both subtypes.
+- Emerging strategies may combine **hypomethylating agents** with **BCL-2 inhibitors** (e.g., venetoclax) in PHF6-mutant cases.
+- TLX1/TLX3 T-ALL disproportionately affects **males**, across age groups.
+- **Clinical outcome**:
+  - TLX1:
+    - Pediatric: generally **low-risk**, 5-year OS ≈ 100%.
+    - Adults/AYA: intermediate to high-risk depending on TLX1 expression level.
+  - TLX3:
+    - Prognosis varies by study, from **low-** to **high-risk**, likely due to treatment and co-mutation differences.
+    - Two distinct subgroups:
+      - **TLX3-immature**: poor prognosis, enriched for WT1, NUP214::ABL1, FLT3-ITD, JAK pathway mutations.
+      - **TLX3 DP-like**: better prognosis, associated with chr14q gain, LEF1, and MYB alterations.
+
+- **Markers**:
+  - TLX3 often linked to **near-ETP phenotype**.
+  - TLX1 more associated with **non-ETP phenotype**.
+  - Both subtypes involve variable TCR gene rearrangements and may display **low expression of mature T-cell markers**.
+
+
+
+
+[NKX2-1 and NKX2-5 rearranged disease]{.sm-red}
+
+- **NKX2-1r**: Encodes a transcription factor involved in thyroid gene regulation and intracellular serine/glycine metabolism. Frequently observed in **pediatric T-ALL** with transformation occurring later in T-cell development.
+- Associated with a **CD4+/CD8+ double-positive phenotype** suggesting a mature thymic origin.
+- Considered a **low-risk** subtype with excellent early molecular response (100% with undetectable MRD at day 29) and **>98% 5-year EFS** in pediatric cohorts.
+- May qualify for **de-escalated chemotherapy protocols** if MRD is low.
+
+- **NKX2-5r**: Recently proposed as a separate entity with rearrangements involving **TCR-β/δ loci** and **BCL11B enhancer hijacking**.
+- Displays a distinct transcriptomic signature compared to NKX2-1r, including alterations in **WT1, NRAS, NOTCH1, RB1, LEF1, and PTEN**.
+- Tends to occur in **younger female pediatric patients**, with **myeloid gene expression enrichment**.
+- Higher incidence of **minimal residual disease (MRD)**, suggesting the need for **close MRD monitoring**.
+
+- **Markers**:
+  - **NKX2-1r**: CD4+, CD8+ (double positive); later-stage T-cell transformation.
+  - **NKX2-5r**: Myeloid marker enrichment; genomic profile distinct from NKX2-1r.
+
+
+
+
+[MLLT10-rearranged (MLLT10r) disease]{.sm-red}
+
+- Represents ~8–10% of T-ALL cases, with rearrangements also observed in AML.
+- Transformation typically occurs at a later maturation stage, but **ETP-like MLLT10r** cases exhibit an **ETP to pre-T** differentiation stage.
+- Frequently co-occurs with alterations in **PSIP1, ETV6, GATA3, IKZF1, RUNX1**, and **RAS signaling**, while showing **fewer NOTCH pathway** mutations.
+- Fusion partners often include **PICALM, DDX3X**, and **KMT2A**.
+- Prognosis is variable depending on study and ETP status:
+  - GRAALL03/05: 5-year OS ~46% (vs. 72% in non-MLLT10r)
+  - NCT00408005: 5-year OS ~83% (vs. 96%)
+- **ETP-like MLLT10r** cases tend to have worse outcomes compared to non-ETP cases.
+- Despite inter-study variability, **current therapies** are generally effective in managing this subtype.
+
+- **Markers**:
+  - Immunophenotype: variable; **ETP to pre-T** in ETP-like cases, more mature in others.
+
+
+
+
+[TAL1 and TAL2]{.sm-red}
+
+- Represent ~25–30% of childhood and adult T-ALL cases.
+- **STIL::TAL1** fusion is the most frequent mechanism, caused by interstitial deletion placing **TAL1** under control of the **STIL** promoter.
+- TAL1 is a **bHLH transcription factor** regulating hematopoietic stem cell fate; interacts with **LMO2**, **NOTCH pathway**, and others.
+- Additional alterations include:
+  - **Super-enhancer** formation via noncoding mutations upstream of TAL1 (MYB binding site).
+  - Other noncoding alterations: enhancer gains, SNV/Indel mutations, enhancer hijacking, inversions, rearrangements.
+- Frequently associated with **PI3K-signaling** pathway alterations, which may be therapeutically targetable.
+- STIL::TAL1 fusions are rare in adults but show **comparable survival** (4-year OS ~45%) to non-STIL::TAL1 patients under current treatment.
+- Prognosis varies with **age**, **type of TAL1 alteration**, and **co-occurring lesions** (e.g. **LMO1**, **LMO2**).
+
+- **Markers**:
+  - No specific immunophenotypic markers mentioned, but typically not associated with immature (ETP-like) phenotypes.
+
+
+
+
+
+[LYL1]{.sm-red}
+
+- **LYL1** encodes a transcription factor involved in **hematopoiesis** and **blood vessel maturation**, often acting via **LMO2** interaction.
+- LYL1 activation defines a **molecular subtype** in T-ALL, found in at least two major genomic landscape studies.
+- Co-occurs with **LMO2 dysregulation**, likely due to shared regulatory mechanisms.
+- Associated with **worse event-free survival (EFS)** and **higher MRD** in pediatric patients.
+- Part of a **mutually exclusive group** of bHLH transcription factor–driven T-ALLs (**TAL1**, **TAL2**, **LYL1**).
+- Two transcriptomic subtypes related to TAL1 context have been described:
+  - **TAL1 αβ-like**: enriched in **STIL::TAL1 fusions**, **LMO1 enhancer SNVs**, and **MYCN mutations**.
+  - **TAL1 DP-like**: CD4+/CD8+ mature phenotype, increased **RAG1/2 expression**, frequent **LMO2–TCR rearrangements**.
+- These subtypes (TAL1αβ-like and DP-like) show **worse overall survival** and **disease-free survival** compared to other T-ALL groups.
+
+- **Markers**:
+  - LYL1-driven T-ALL may exhibit **mature T-cell phenotype (CD4+/CD8+)** in TAL1-DP-like form.
+  - Increased expression of **RAG1**, **RAG2**, and rearranged **LMO2–TCR** are characteristic of TAL1-DP-like subtype.
+
+
+
+
+
+[LMO1 and LMO2]{.sm-red}
+
+- **LMO1** and **LMO2** encode transcriptional co-regulators (non–DNA-binding) involved in **protein–protein interactions**.
+- **LMO2** is essential for hematopoiesis and angiogenesis; **LMO1** plays a role in neurogenesis.
+- LMO1 and LMO2 alterations are **mutually exclusive**.
+- Dysregulation patterns:
+  - **LMO2** can co-occur with **LYL1** or **LMO1** dysregulation.
+  - **LMO1** forms a distinct subset when co-activated with **TAL1**.
+- **JAK/STAT pathway activation** is frequently observed in:
+  - **TAL1/LMO1** (JAK1, JAK3, STAT5A, STAT5B)
+  - **LYL1/LMO2** (JAK1, JAK3, STAT5A)
+- Prognosis:
+  - **LMO2** alterations are high-risk in AYA/adults (4-year OS: 29%)
+  - Low-risk in pediatric patients (5-year OS: 90–96%)
+- **LMO2 subtype refinements**:
+  - **LMO2 γδ-like**: BCL11B enhancer hijacking, TCRδ rearrangements, poor 5-year EFS (<60%)
+  - **STAG2/LMO2**: LMO2::STAG2 fusion, inactivation of STAG2, occurs in very young females (<1% of cases), poor prognosis if MRD ≥1%
+- Prognostic severity depends on **age, driver mutation, and co-occurring alterations**.
+- **Targetable vulnerabilities**:
+  - Frequent JAK/STAT pathway activation → promising responses to **JAK inhibitors** (e.g. ruxolitinib, tofacitinib, upadacitinib)
+  - **Combination therapy** with **venetoclax** (BCL-2 inhibitor) shows synergy in samples with IL7R pathway mutations.
+  - **Fedratinib** (JAK2 inhibitor) also targets **FLT3**, suggesting use in dual-mutated leukemias.
+
+- **Markers**:
+  - No specific immunophenotype explicitly defined in the text.
+  - **LMO2 γδ-like** subtype is associated with **TCRδ rearrangements**.
+
+
+
+
+
+
+
+
+
+
+
+
+# Markers
+
+```{r markers}
+
+# SeuratObj@meta.data %>% 
+#   dplyr::count(v_call) %>% 
+#   dplyr::arrange(desc(n))
+```
+
+
+
+
+
+
+
+
+
